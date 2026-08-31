@@ -40,6 +40,9 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;');
 }
 
+// Track pending edit requests from group admins
+const activeEditSessions = new Map();
+
 // Initialize Telegram Bot
 const bot = new TelegramBot(TOKEN, { polling: true });
 
@@ -64,17 +67,23 @@ bot.onText(/\/start/, (msg) => {
   });
 });
 
-// Handle Callback Queries (When Group Owner clicks status/action buttons)
+// Handle Callback Queries (Buttons: Accept, Reject, Edit)
 bot.on('callback_query', async (query) => {
-  const { id, data, message } = query;
+  const { id, data, message, from } = query;
   
+  // 1. Handle Status Buttons: Accepted / Rejected
   if (data.startsWith('status_')) {
     const statusType = data.replace('status_', '');
-    let statusBadge = '🟡 Pending';
-    if (statusType === 'contacted') statusBadge = '🟢 Contacted';
-    if (statusType === 'closed') statusBadge = '🔵 Closed / Deal';
+    let statusBadge = '🟢 Accepted';
+    if (statusType === 'rejected') statusBadge = '🔴 Rejected';
 
-    const updatedText = message.text + `\n\n<b>Updated Status:</b> ${statusBadge}`;
+    // Remove existing status line if re-clicking
+    let currentText = message.text;
+    if (currentText.includes('Status:')) {
+      currentText = currentText.split('\nStatus:')[0];
+    }
+
+    const updatedText = currentText + `\n\n<b>Status:</b> ${statusBadge} (by ${from.first_name})`;
 
     try {
       await bot.editMessageText(updatedText, {
@@ -83,9 +92,61 @@ bot.on('callback_query', async (query) => {
         parse_mode: 'HTML',
         reply_markup: message.reply_markup
       });
-      bot.answerCallbackQuery(id, { text: `Status updated to ${statusBadge}` });
+      bot.answerCallbackQuery(id, { text: `Marked as ${statusType.toUpperCase()}` });
     } catch (err) {
-      console.error("Failed to edit message:", err.message);
+      console.error("Failed to edit message status:", err.message);
+    }
+  }
+
+  // 2. Handle Manual Text Edit Request by Group Owner/Admin
+  if (data === 'edit_inquiry') {
+    activeEditSessions.set(from.id, {
+      chatId: message.chat.id,
+      messageId: message.message_id,
+      originalText: message.text
+    });
+
+    bot.answerCallbackQuery(id, { text: "Reply to this topic with the updated text to overwrite the message." });
+    
+    bot.sendMessage(message.chat.id, 
+      `✏️ <b>Edit Mode Activated</b> (${from.first_name})\n\nPlease reply with the new text body you wish to display on the inquiry card.`, 
+      { parse_mode: 'HTML', message_thread_id: message.message_thread_id }
+    );
+  }
+});
+
+// Listen for Admin Reply text to apply custom edits
+bot.on('message', async (msg) => {
+  if (!msg.text || msg.text.startsWith('/')) return;
+
+  const session = activeEditSessions.get(msg.from.id);
+  if (session) {
+    const newText = escapeHtml(msg.text);
+
+    const keyboard = {
+      inline_keyboard: [
+        [
+          { text: "🟢 Accept", callback_data: "status_accepted" },
+          { text: "🔴 Reject", callback_data: "status_rejected" }
+        ],
+        [
+          { text: "✏️ Edit Details", callback_data: "edit_inquiry" }
+        ]
+      ]
+    };
+
+    try {
+      await bot.editMessageText(newText, {
+        chat_id: session.chatId,
+        message_id: session.messageId,
+        parse_mode: 'HTML',
+        reply_markup: keyboard
+      });
+
+      bot.sendMessage(msg.chat.id, "✅ Card updated successfully!", { message_thread_id: msg.message_thread_id });
+      activeEditSessions.delete(msg.from.id);
+    } catch (err) {
+      console.error("Failed to apply admin edit:", err.message);
     }
   }
 });
@@ -169,8 +230,11 @@ app.post('/submit-form', async (req, res) => {
       reply_markup: {
         inline_keyboard: [
           [
-            { text: "🟢 Mark Contacted", callback_data: "status_contacted" },
-            { text: "🔵 Mark Closed", callback_data: "status_closed" }
+            { text: "🟢 Accept", callback_data: "status_accepted" },
+            { text: "🔴 Reject", callback_data: "status_rejected" }
+          ],
+          [
+            { text: "✏️ Edit Details", callback_data: "edit_inquiry" }
           ]
         ]
       }
