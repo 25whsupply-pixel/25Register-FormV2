@@ -280,18 +280,14 @@
       submitBtn.innerText = 'Submitting...';
 
       const user = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
-      
-      // Auto-captured user identifier (fallback to ID link if no username)
-      let autoSubmittedBy = 'N/A';
-      if (user) {
-        if (user.username) {
-          autoSubmittedBy = `@${user.username}`;
-        } else {
-          autoSubmittedBy = `${user.first_name || ''} ${user.last_name || ''}`.trim() || `ID: ${user.id}`;
-        }
-      }
 
-      // Format Date: e.g. "31 Aug 2026, 10:42 PM"
+      // Extract raw Telegram User Object Details
+      const tgUserId = user ? user.id : null;
+      const tgUsername = user && user.username ? user.username : null;
+      const tgFirstName = user ? (user.first_name || '') : '';
+      const tgLastName = user ? (user.last_name || '') : '';
+
+      // Format Date: "31 Aug 2026, 10:42 PM"
       const now = new Date();
       const options = { 
         timeZone: 'Asia/Phnom_Penh', 
@@ -305,8 +301,11 @@
       const submittedAtStr = now.toLocaleString('en-GB', options).replace(',', '');
 
       const formData = {
-        chat_id: user ? user.id : null,
-        autoSubmittedBy: autoSubmittedBy,
+        chat_id: tgUserId,
+        tgUserId: tgUserId,
+        tgUsername: tgUsername,
+        tgFirstName: tgFirstName,
+        tgLastName: tgLastName,
         telegramAccount: document.getElementById('telegramAccount').value,
         submittedAt: submittedAtStr,
         fullName: document.getElementById('fullName').value,
