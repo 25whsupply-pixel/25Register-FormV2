@@ -104,7 +104,7 @@ app.post('/submit-form', async (req, res) => {
   if (landSize) sizeText += `\n📐 Land Size: ${landSize}`;
   if (buildingSize) sizeText += `\n🏢 Building Size: ${buildingSize}`;
 
-  // Build "Submitted By" link (uses @username if available, otherwise direct tg://user?id= account link)
+  // Build "Submitted By" link
   let submittedByLink = 'N/A';
   if (data.tgUsername) {
     submittedByLink = `@${data.tgUsername}`;
@@ -176,9 +176,29 @@ Our team will contact you shortly!`;
 
     await bot.sendMessage(data.chat_id, clientMessage, { parse_mode: 'HTML' })
       .catch(err => console.error("Client DM Error:", err.message));
+
+    // 3. Follow-up Message after 5 seconds delay
+    setTimeout(() => {
+      const followUpText = "ដើម្បីតាមដានពួកយើង សូមចូលឆាណែលតេឡេក្រាមខាងក្រោម👇";
+      const followUpOptions = {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              { text: "អចលនទ្រព្យ ជួល", url: "https://t.me/+wbOpMBLS6t1hYzY1" }
+            ],
+            [
+              { text: "អចលនទ្រព្យ លក់", url: "https://t.me/khmer25service" }
+            ]
+          ]
+        }
+      };
+
+      bot.sendMessage(data.chat_id, followUpText, followUpOptions)
+        .catch(err => console.error("Follow-up Message Error:", err.message));
+    }, 5000);
   }
 
-  // 3. Google Sheets Endpoint
+  // 4. Google Sheets Endpoint
   if (SCRIPT_URL) {
     try {
       await fetch(SCRIPT_URL, {
