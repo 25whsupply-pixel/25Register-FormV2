@@ -65,6 +65,10 @@
     .price-row .form-group, .grid-2 .form-group {
       flex: 1;
     }
+    /* Hidden by default until Land or Warehouse is selected */
+    #sizeFieldsGroup {
+      display: none;
+    }
     button {
       width: 100%;
       padding: 12px;
@@ -126,6 +130,18 @@
             <option value="Rent">Rent</option>
             <option value="Buy">Buy</option>
           </select>
+        </div>
+      </div>
+
+      <!-- Conditional Size Fields for Land & Warehouse -->
+      <div class="grid-2" id="sizeFieldsGroup">
+        <div class="form-group">
+          <label for="landSize">Land Size (m²) *</label>
+          <input type="text" id="landSize" placeholder="e.g. 10m x 20m or 200m²">
+        </div>
+        <div class="form-group">
+          <label for="buildingSize">Building Size (m²) *</label>
+          <input type="text" id="buildingSize" placeholder="e.g. 8m x 15m or 120m²">
         </div>
       </div>
 
@@ -225,6 +241,30 @@
       }
     }
 
+    const propertyTypeSelect = document.getElementById('propertyType');
+    const sizeFieldsGroup = document.getElementById('sizeFieldsGroup');
+    const landSizeInput = document.getElementById('landSize');
+    const buildingSizeInput = document.getElementById('buildingSize');
+
+    // Toggle fields based on Property Type selection
+    function toggleSizeFields() {
+      const selectedType = propertyTypeSelect.value;
+      if (selectedType === 'Land' || selectedType === 'Warehouse') {
+        sizeFieldsGroup.style.display = 'flex';
+        landSizeInput.required = true;
+        buildingSizeInput.required = true;
+      } else {
+        sizeFieldsGroup.style.display = 'none';
+        landSizeInput.required = false;
+        buildingSizeInput.required = false;
+        landSizeInput.value = '';
+        buildingSizeInput.value = '';
+      }
+    }
+
+    propertyTypeSelect.addEventListener('change', toggleSizeFields);
+    toggleSizeFields(); // Initial check on load
+
     const form = document.getElementById('inquiryForm');
     const submitBtn = document.getElementById('submitBtn');
 
@@ -241,8 +281,10 @@
         fullName: document.getElementById('fullName').value,
         phone: document.getElementById('phone').value,
         phone2: document.getElementById('phone2').value,
-        propertyType: document.getElementById('propertyType').value,
+        propertyType: propertyTypeSelect.value,
         target: document.getElementById('target').value,
+        landSize: landSizeInput.value,
+        buildingSize: buildingSizeInput.value,
         location: document.getElementById('location').value,
         location2: document.getElementById('location2').value,
         minPrice: document.getElementById('minPrice').value,
