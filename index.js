@@ -31,10 +31,13 @@ const TOPIC_ID = process.env.TOPIC_CLIENT_ID || process.env.TOPIC_ID
   ? parseInt(process.env.TOPIC_CLIENT_ID || process.env.TOPIC_ID) 
   : null;
 
-// Helper function to escape special formatting characters safely
-function cleanText(str) {
+// Clean text for safe HTML output
+function escapeHtml(str) {
   if (!str) return '';
-  return String(str).replace(/[*_`\[\]]/g, '').trim();
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
 // Initialize Telegram Bot
@@ -65,65 +68,73 @@ app.post('/submit-form', async (req, res) => {
   console.log("Form payload received:", req.body);
   const data = req.body;
 
-  // Extract Form Data
-  const name = cleanText(data.fullName) || 'N/A';
-  const phone1 = cleanText(data.phone);
-  const phone2 = cleanText(data.phone2);
-  const telegramAccount = cleanText(data.telegramAccount) || 'N/A';
-  const autoSubmittedBy = cleanText(data.autoSubmittedBy) || 'N/A';
-  const submittedAt = cleanText(data.submittedAt) || 'N/A';
+  // Form Fields
+  const name = escapeHtml(data.fullName) || 'N/A';
+  const phone1 = escapeHtml(data.phone);
+  const phone2 = escapeHtml(data.phone2);
+  const telegramAccount = escapeHtml(data.telegramAccount) || 'N/A';
+  const submittedAt = escapeHtml(data.submittedAt) || 'N/A';
 
   let phoneSummary = phone1 || 'N/A';
   if (phone2) {
     phoneSummary += `, ${phone2}`;
   }
 
-  const loc1 = cleanText(data.location);
-  const loc2 = cleanText(data.location2);
+  const loc1 = escapeHtml(data.location);
+  const loc2 = escapeHtml(data.location2);
   let locationSummary = loc1 || 'N/A';
   if (loc2) {
     locationSummary += `, ${loc2}`;
   }
 
-  const target = cleanText(data.target) || 'N/A';
-  const propertyType = cleanText(data.propertyType) || 'N/A';
-  const landSize = cleanText(data.landSize);
-  const buildingSize = cleanText(data.buildingSize);
-  const minPrice = cleanText(data.minPrice) || '0';
-  const maxPrice = cleanText(data.maxPrice) || '0';
-  const bedrooms = cleanText(data.bedrooms) || 'N/A';
-  const bathrooms = cleanText(data.bathrooms) || 'N/A';
-  const parking = cleanText(data.parking) || 'N/A';
-  const direction = cleanText(data.direction) || 'N/A';
-  const notes = cleanText(data.notes) || 'N/A';
+  const target = escapeHtml(data.target) || 'N/A';
+  const propertyType = escapeHtml(data.propertyType) || 'N/A';
+  const landSize = escapeHtml(data.landSize);
+  const buildingSize = escapeHtml(data.buildingSize);
+  const minPrice = escapeHtml(data.minPrice) || '0';
+  const maxPrice = escapeHtml(data.maxPrice) || '0';
+  const bedrooms = escapeHtml(data.bedrooms) || 'N/A';
+  const bathrooms = escapeHtml(data.bathrooms) || 'N/A';
+  const parking = escapeHtml(data.parking) || 'N/A';
+  const direction = escapeHtml(data.direction) || 'N/A';
+  const notes = escapeHtml(data.notes) || 'N/A';
 
   // Build Size Info string if available
   let sizeText = '';
   if (landSize) sizeText += `\n📐 Land Size: ${landSize}`;
   if (buildingSize) sizeText += `\n🏢 Building Size: ${buildingSize}`;
 
+  // Build "Submitted By" link (uses @username if available, otherwise direct tg://user?id= account link)
+  let submittedByLink = 'N/A';
+  if (data.tgUsername) {
+    submittedByLink = `@${data.tgUsername}`;
+  } else if (data.tgUserId) {
+    const userFullName = escapeHtml(`${data.tgFirstName} ${data.tgLastName}`.trim()) || 'User';
+    submittedByLink = `<a href="tg://user?id=${data.tgUserId}">${userFullName}</a>`;
+  }
+
   // 1. Alert Notification to Telegram Group / Topic
   if (GROUP_CHAT_ID) {
     const groupMessage = 
-`🚨 NEW CLIENT INQUIRY ALERT 🚨
+`🚨 <b>NEW CLIENT INQUIRY ALERT</b> 🚨
 
-👤 Client Name: ${name}
-📞 Phone: ${phoneSummary}
-💬 Telegram Account: ${telegramAccount}
-🏷 Target: ${target}
-🏠 Type: ${propertyType}${sizeText}
-📍 Location: ${locationSummary}
-💰 Budget: $${minPrice} - $${maxPrice}
-🛏 Bedrooms: ${bedrooms}
-🛁 Bathrooms: ${bathrooms}
-🚗 Parking: ${parking}
-🧩 Direction: ${direction}
-📝 Notes: ${notes}
+👤 <b>Client Name:</b> ${name}
+📞 <b>Phone:</b> ${phoneSummary}
+💬 <b>Telegram Account:</b> ${telegramAccount}
+🏷 <b>Target:</b> ${target}
+🏠 <b>Type:</b> ${propertyType}${sizeText}
+📍 <b>Location:</b> ${locationSummary}
+💰 <b>Budget:</b> $${minPrice} - $${maxPrice}
+🛏 <b>Bedrooms:</b> ${bedrooms}
+🛁 <b>Bathrooms:</b> ${bathrooms}
+🚗 <b>Parking:</b> ${parking}
+🧩 <b>Direction:</b> ${direction}
+📝 <b>Notes:</b> ${notes}
 
-Submitted Date : ${submittedAt}
-Submitted By: ${autoSubmittedBy}`;
+<b>Submitted Date :</b> ${submittedAt}
+<b>Submitted By:</b> ${submittedByLink}`;
 
-    const options = {};
+    const options = { parse_mode: 'HTML' };
     if (TOPIC_ID) {
       options.message_thread_id = TOPIC_ID;
     }
@@ -141,29 +152,29 @@ Submitted By: ${autoSubmittedBy}`;
     if (buildingSize) sizeClientText += `\n• Building Size: ${buildingSize}`;
 
     const clientMessage = 
-`✅ Registration Received!
+`✅ <b>Registration Received!</b>
 
 Thank you, ${name}, for registering with 25Realty.
 
-Summary of Details:
-• Phone: ${phoneSummary}
-• Telegram Account: ${telegramAccount}
-• Target: ${target}
-• Property Type: ${propertyType}${sizeClientText}
-• Preferred Location: ${locationSummary}
-• Price Range: $${minPrice} - $${maxPrice}
-• Bedrooms: ${bedrooms}
-• Bathrooms: ${bathrooms}
-• Parking: ${parking}
-• Direction: ${direction}
-• Notes: ${notes}
+<b>Summary of Details:</b>
+• <b>Phone:</b> ${phoneSummary}
+• <b>Telegram Account:</b> ${telegramAccount}
+• <b>Target:</b> ${target}
+• <b>Property Type:</b> ${propertyType}${sizeClientText}
+• <b>Preferred Location:</b> ${locationSummary}
+• <b>Price Range:</b> $${minPrice} - $${maxPrice}
+• <b>Bedrooms:</b> ${bedrooms}
+• <b>Bathrooms:</b> ${bathrooms}
+• <b>Parking:</b> ${parking}
+• <b>Direction:</b> ${direction}
+• <b>Notes:</b> ${notes}
 
-Submitted Date : ${submittedAt}
-Submitted By: ${autoSubmittedBy}
+<b>Submitted Date :</b> ${submittedAt}
+<b>Submitted By:</b> ${submittedByLink}
 
 Our team will contact you shortly!`;
 
-    await bot.sendMessage(data.chat_id, clientMessage)
+    await bot.sendMessage(data.chat_id, clientMessage, { parse_mode: 'HTML' })
       .catch(err => console.error("Client DM Error:", err.message));
   }
 
