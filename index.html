@@ -281,13 +281,11 @@
 
       const user = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
 
-      // Extract raw Telegram User Object Details
       const tgUserId = user ? user.id : null;
       const tgUsername = user && user.username ? user.username : null;
       const tgFirstName = user ? (user.first_name || '') : '';
       const tgLastName = user ? (user.last_name || '') : '';
 
-      // Format Date: "31 Aug 2026, 10:42 PM"
       const now = new Date();
       const options = { 
         timeZone: 'Asia/Phnom_Penh', 
