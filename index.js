@@ -69,8 +69,9 @@ app.post('/submit-form', async (req, res) => {
   const name = cleanText(data.fullName) || 'N/A';
   const phone1 = cleanText(data.phone);
   const phone2 = cleanText(data.phone2);
-  const handle = cleanText(data.telegramUser) || 'N/A';
-  const submittedAt = cleanText(data.submittedAt) || new Date().toLocaleString('en-US', { timeZone: 'Asia/Phnom_Penh' });
+  const telegramAccount = cleanText(data.telegramAccount) || 'N/A';
+  const autoSubmittedBy = cleanText(data.autoSubmittedBy) || 'N/A';
+  const submittedAt = cleanText(data.submittedAt) || 'N/A';
 
   let phoneSummary = phone1 || 'N/A';
   if (phone2) {
@@ -94,7 +95,7 @@ app.post('/submit-form', async (req, res) => {
   const bathrooms = cleanText(data.bathrooms) || 'N/A';
   const parking = cleanText(data.parking) || 'N/A';
   const direction = cleanText(data.direction) || 'N/A';
-  const notes = cleanText(data.notes) || 'None';
+  const notes = cleanText(data.notes) || 'N/A';
 
   // Build Size Info string if available
   let sizeText = '';
@@ -106,10 +107,9 @@ app.post('/submit-form', async (req, res) => {
     const groupMessage = 
 `🚨 NEW CLIENT INQUIRY ALERT 🚨
 
-📅 Date & Time: ${submittedAt}
 👤 Client Name: ${name}
 📞 Phone: ${phoneSummary}
-💬 Telegram Account: ${handle}
+💬 Telegram Account: ${telegramAccount}
 🏷 Target: ${target}
 🏠 Type: ${propertyType}${sizeText}
 📍 Location: ${locationSummary}
@@ -118,7 +118,10 @@ app.post('/submit-form', async (req, res) => {
 🛁 Bathrooms: ${bathrooms}
 🚗 Parking: ${parking}
 🧩 Direction: ${direction}
-📝 Notes: ${notes}`;
+📝 Notes: ${notes}
+
+Submitted Date : ${submittedAt}
+Submitted By: ${autoSubmittedBy}`;
 
     const options = {};
     if (TOPIC_ID) {
@@ -143,8 +146,8 @@ app.post('/submit-form', async (req, res) => {
 Thank you, ${name}, for registering with 25Realty.
 
 Summary of Details:
-📅 Submitted: ${submittedAt}
 • Phone: ${phoneSummary}
+• Telegram Account: ${telegramAccount}
 • Target: ${target}
 • Property Type: ${propertyType}${sizeClientText}
 • Preferred Location: ${locationSummary}
@@ -154,6 +157,9 @@ Summary of Details:
 • Parking: ${parking}
 • Direction: ${direction}
 • Notes: ${notes}
+
+Submitted Date : ${submittedAt}
+Submitted By: ${autoSubmittedBy}
 
 Our team will contact you shortly!`;
 
