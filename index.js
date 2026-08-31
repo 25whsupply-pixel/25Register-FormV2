@@ -40,7 +40,7 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;');
 }
 
-// Track pending edit requests from group admins
+// Track pending edit sessions from group admins
 const activeEditSessions = new Map();
 
 // Initialize Telegram Bot
@@ -77,7 +77,6 @@ bot.on('callback_query', async (query) => {
     let statusBadge = '🟢 Accepted';
     if (statusType === 'rejected') statusBadge = '🔴 Rejected';
 
-    // Remove existing status line if re-clicking
     let currentText = message.text;
     if (currentText.includes('Status:')) {
       currentText = currentText.split('\nStatus:')[0];
@@ -106,12 +105,16 @@ bot.on('callback_query', async (query) => {
       originalText: message.text
     });
 
-    bot.answerCallbackQuery(id, { text: "Reply to this topic with the updated text to overwrite the message." });
+    bot.answerCallbackQuery(id, { text: "Reply with updated text to overwrite." });
     
-    bot.sendMessage(message.chat.id, 
+    const promptMsg = await bot.sendMessage(
+      message.chat.id, 
       `✏️ <b>Edit Mode Activated</b> (${from.first_name})\n\nPlease reply with the new text body you wish to display on the inquiry card.`, 
       { parse_mode: 'HTML', message_thread_id: message.message_thread_id }
     );
+
+    // Save prompt message ID to clean it up later if needed
+    activeEditSessions.get(from.id).promptMessageId = promptMsg.message_id;
   }
 });
 
@@ -121,7 +124,18 @@ bot.on('message', async (msg) => {
 
   const session = activeEditSessions.get(msg.from.id);
   if (session) {
-    const newText = escapeHtml(msg.text);
+    let newText = escapeHtml(msg.text);
+
+    // Get Editor Telegram tag
+    let editorTag = msg.from.username ? `@${msg.from.username}` : `${msg.from.first_name}`.trim();
+
+    // Strip out previous "Edited by" block if present in user submission
+    if (newText.includes('Edited by:')) {
+      newText = newText.split('\n\n<i>Edited by:')[0];
+    }
+
+    // Append "Edited by" attribution line in light italic format
+    newText += `\n\n<i>Edited by: ${editorTag}</i>`;
 
     const keyboard = {
       inline_keyboard: [
@@ -136,6 +150,7 @@ bot.on('message', async (msg) => {
     };
 
     try {
+      // 1. Update the original inquiry card
       await bot.editMessageText(newText, {
         chat_id: session.chatId,
         message_id: session.messageId,
@@ -143,7 +158,25 @@ bot.on('message', async (msg) => {
         reply_markup: keyboard
       });
 
-      bot.sendMessage(msg.chat.id, "✅ Card updated successfully!", { message_thread_id: msg.message_thread_id });
+      // 2. Delete Admin's input message to keep channel clean
+      await bot.deleteMessage(msg.chat.id, msg.message_id).catch(() => {});
+
+      // 3. Delete prompt message if active
+      if (session.promptMessageId) {
+        await bot.deleteMessage(msg.chat.id, session.promptMessageId).catch(() => {});
+      }
+
+      // 4. Send notification message and auto-delete after 15 seconds
+      const confirmMsg = await bot.sendMessage(
+        msg.chat.id, 
+        "✅ Card updated successfully!", 
+        { message_thread_id: msg.message_thread_id }
+      );
+
+      setTimeout(() => {
+        bot.deleteMessage(msg.chat.id, confirmMsg.message_id).catch(() => {});
+      }, 15000);
+
       activeEditSessions.delete(msg.from.id);
     } catch (err) {
       console.error("Failed to apply admin edit:", err.message);
