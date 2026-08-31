@@ -104,13 +104,17 @@ app.post('/submit-form', async (req, res) => {
   if (landSize) sizeText += `\n📐 Land Size: ${landSize}`;
   if (buildingSize) sizeText += `\n🏢 Building Size: ${buildingSize}`;
 
-  // Build "Submitted By" link
+  // Build Telegram User Account Identifiers
   let submittedByLink = 'N/A';
+  let submittedByPlain = 'N/A';
+
   if (data.tgUsername) {
     submittedByLink = `@${data.tgUsername}`;
+    submittedByPlain = `@${data.tgUsername}`;
   } else if (data.tgUserId) {
     const userFullName = escapeHtml(`${data.tgFirstName} ${data.tgLastName}`.trim()) || 'User';
     submittedByLink = `<a href="tg://user?id=${data.tgUserId}">${userFullName}</a>`;
+    submittedByPlain = `${userFullName} (ID: ${data.tgUserId})`;
   }
 
   // 1. Alert Notification to Telegram Group / Topic
@@ -177,7 +181,7 @@ Our team will contact you shortly!`;
     await bot.sendMessage(data.chat_id, clientMessage, { parse_mode: 'HTML' })
       .catch(err => console.error("Client DM Error:", err.message));
 
-    // 3. Follow-up Message after 5 seconds delay
+    // Follow-up Message after 5 seconds delay
     setTimeout(() => {
       const followUpText = "ដើម្បីតាមដានពួកយើង សូមចូលឆាណែលតេឡេក្រាមខាងក្រោម👇";
       const followUpOptions = {
@@ -198,13 +202,33 @@ Our team will contact you shortly!`;
     }, 5000);
   }
 
-  // 4. Google Sheets Endpoint
+  // 3. Google Sheets Endpoint
   if (SCRIPT_URL) {
     try {
+      const sheetPayload = {
+        fullName: name,
+        phone: phoneSummary,
+        telegramAccount: telegramAccount,
+        target: target,
+        propertyType: propertyType,
+        buildingSize: buildingSize || 'N/A',
+        landSize: landSize || 'N/A',
+        location: locationSummary,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+        bedrooms: bedrooms,
+        bathrooms: bathrooms,
+        parking: parking,
+        direction: direction,
+        notes: notes,
+        submittedAt: submittedAt,
+        submittedBy: submittedByPlain
+      };
+
       await fetch(SCRIPT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify(sheetPayload)
       });
       console.log("Successfully posted to Google Sheets.");
     } catch (err) {
