@@ -1,19 +1,24 @@
 const express = require('express');
 const TelegramBot = require('node-telegram-bot-api');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Serve static frontend files (index.html, styles, scripts)
+app.use(express.static(path.join(__dirname)));
+
 // Fetch Environment Variables
 const TOKEN = process.env.BOT_TOKEN;
 
+// Default to Render URL if WEB_APP_URL isn't specified
 const WEB_APP_URL = 
   process.env.WEB_APP_URL || 
   process.env['WEB-APP-URL'] || 
-  "https://bputheavypc22-pixel.github.io/25Register-FormV2/";
+  "https://two5register-formv2-8kmz.onrender.com";
 
 const SCRIPT_URL = 
   process.env.SCRIPT_URL || 
@@ -23,10 +28,9 @@ const GROUP_CHAT_ID =
   process.env.GROUP_CHAT_ID || 
   process.env.TELEGRAM_GROUP_ID;
 
-const TOPIC_ID = 
-  process.env.TOPIC_ID || 
-  process.env.TOPIC_CLIENT_ID ? 
-  parseInt(process.env.TOPIC_ID || process.env.TOPIC_CLIENT_ID) : null;
+const TOPIC_ID = process.env.TOPIC_CLIENT_ID || process.env.TOPIC_ID 
+  ? parseInt(process.env.TOPIC_CLIENT_ID || process.env.TOPIC_ID) 
+  : null;
 
 // Helper function to escape special formatting characters safely
 function cleanText(str) {
@@ -37,8 +41,14 @@ function cleanText(str) {
 // Initialize Telegram Bot
 const bot = new TelegramBot(TOKEN, { polling: true });
 
+// Serve the HTML registration form when accessing root URL
 app.get('/', (req, res) => {
-  res.send('25Realty Backend Server is active and running!');
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Health check endpoint for UptimeRobot
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
 });
 
 bot.onText(/\/start/, (msg) => {
@@ -120,12 +130,12 @@ Our team will contact you shortly!`;
 👤 Client Name: ${name}
 📞 Phone: ${phoneSummary}
 💬 Telegram Handle: @${handle}
-🏷️ Target: ${target}
+🏷 Target: ${target}
 🏠 Type: ${propertyType}
 📍 Location: ${locationSummary}
 💰 Budget: $${minPrice} - $${maxPrice}
-🛏️ Bedrooms: ${bedrooms}
-0️⃣ Bathrooms: ${bathrooms}
+🛏 Bedrooms: ${bedrooms}
+🛁 Bathrooms: ${bathrooms}
 🚗 Parking: ${parking}
 🧩 Direction: ${direction}
 📝 Notes: ${notes}`;
