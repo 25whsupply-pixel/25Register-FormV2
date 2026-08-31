@@ -111,6 +111,11 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <label for="telegramAccount">Telegram Account</label>
+        <input type="text" id="telegramAccount" placeholder="e.g. @username or Phone">
+      </div>
+
       <div class="grid-2">
         <div class="form-group">
           <label for="propertyType">Property Type *</label>
@@ -136,11 +141,11 @@
       <div class="grid-2" id="sizeFieldsGroup">
         <div class="form-group">
           <label for="landSize">Land Size (m²) *</label>
-          <input type="text" id="landSize" placeholder="e.g. 10m x 20m">
+          <input type="text" id="landSize" placeholder="e.g. 4x15">
         </div>
         <div class="form-group">
           <label for="buildingSize">Building Size (m²) *</label>
-          <input type="text" id="buildingSize" placeholder="e.g. 8m x 15m">
+          <input type="text" id="buildingSize" placeholder="e.g. 4x12">
         </div>
       </div>
 
@@ -238,6 +243,9 @@
       if (autoName) {
         document.getElementById('fullName').value = autoName;
       }
+      if (user.username) {
+        document.getElementById('telegramAccount').value = `@${user.username}`;
+      }
     }
 
     const propertyTypeSelect = document.getElementById('propertyType');
@@ -273,27 +281,33 @@
 
       const user = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
       
-      // Determine Telegram Handle
-      let telegramUserStr = 'N/A';
+      // Auto-captured user identifier (fallback to ID link if no username)
+      let autoSubmittedBy = 'N/A';
       if (user) {
         if (user.username) {
-          telegramUserStr = `@${user.username}`;
+          autoSubmittedBy = `@${user.username}`;
         } else {
-          telegramUserStr = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+          autoSubmittedBy = `${user.first_name || ''} ${user.last_name || ''}`.trim() || `ID: ${user.id}`;
         }
       }
 
-      // Generate Current Date & Time String
+      // Format Date: e.g. "31 Aug 2026, 10:42 PM"
       const now = new Date();
-      const submittedAtStr = now.toLocaleString('en-US', { 
-        timeZone: 'Asia/Phnom_Penh',
-        dateStyle: 'medium', 
-        timeStyle: 'short' 
-      });
+      const options = { 
+        timeZone: 'Asia/Phnom_Penh', 
+        day: '2-digit', 
+        month: 'short', 
+        year: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: true 
+      };
+      const submittedAtStr = now.toLocaleString('en-GB', options).replace(',', '');
 
       const formData = {
         chat_id: user ? user.id : null,
-        telegramUser: telegramUserStr,
+        autoSubmittedBy: autoSubmittedBy,
+        telegramAccount: document.getElementById('telegramAccount').value,
         submittedAt: submittedAtStr,
         fullName: document.getElementById('fullName').value,
         phone: document.getElementById('phone').value,
