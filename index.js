@@ -64,6 +64,32 @@ bot.onText(/\/start/, (msg) => {
   });
 });
 
+// Handle Callback Queries (When Group Owner clicks status/action buttons)
+bot.on('callback_query', async (query) => {
+  const { id, data, message } = query;
+  
+  if (data.startsWith('status_')) {
+    const statusType = data.replace('status_', '');
+    let statusBadge = '🟡 Pending';
+    if (statusType === 'contacted') statusBadge = '🟢 Contacted';
+    if (statusType === 'closed') statusBadge = '🔵 Closed / Deal';
+
+    const updatedText = message.text + `\n\n<b>Updated Status:</b> ${statusBadge}`;
+
+    try {
+      await bot.editMessageText(updatedText, {
+        chat_id: message.chat.id,
+        message_id: message.message_id,
+        parse_mode: 'HTML',
+        reply_markup: message.reply_markup
+      });
+      bot.answerCallbackQuery(id, { text: `Status updated to ${statusBadge}` });
+    } catch (err) {
+      console.error("Failed to edit message:", err.message);
+    }
+  }
+});
+
 app.post('/submit-form', async (req, res) => {
   console.log("Form payload received:", req.body);
   const data = req.body;
@@ -138,7 +164,18 @@ app.post('/submit-form', async (req, res) => {
 <b>Submitted Date :</b> ${submittedAt}
 <b>Submitted By:</b> ${submittedByLink}`;
 
-    const options = { parse_mode: 'HTML' };
+    const options = { 
+      parse_mode: 'HTML',
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: "🟢 Mark Contacted", callback_data: "status_contacted" },
+            { text: "🔵 Mark Closed", callback_data: "status_closed" }
+          ]
+        ]
+      }
+    };
+
     if (TOPIC_ID) {
       options.message_thread_id = TOPIC_ID;
     }
@@ -202,7 +239,7 @@ Our team will contact you shortly!`;
     }, 5000);
   }
 
-  // 3. Google Sheets Endpoint (Passes Phone 1 and Phone 2 Separately)
+  // 3. Google Sheets Endpoint
   if (SCRIPT_URL) {
     try {
       const sheetPayload = {
