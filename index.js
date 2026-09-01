@@ -335,19 +335,19 @@ Our team will contact you shortly!`;
     }, 5000);
   }
 
-  // 3. Google Sheets Endpoint
+  // 3. Google Sheets Endpoint (Appends single quote ' to force text format for leading zero)
   if (SCRIPT_URL) {
     try {
       const sheetPayload = {
         fullName: name,
-        phone1: phone1 || 'N/A',            // Column C: Tel 1
-        phone2: phone2 || 'N/A',            // Column D: Tel 2
-        telegramAccount: telegramAccount,   // Column E: Telegram
-        target: target,                     // Column F: Target
-        propertyType: propertyType,         // Column G: Property Type
-        buildingSize: buildingSize || 'N/A',// Column J: Building Size
-        landSize: landSize || 'N/A',        // Column K: Land Size
-        location: locationSummary,          // Column I: Area
+        phone1: phone1 ? `'${phone1}` : 'N/A',       // Column C: Tel 1
+        phone2: phone2 ? `'${phone2}` : 'N/A',       // Column D: Tel 2
+        telegramAccount: telegramAccount,             // Column E: Telegram
+        target: target,                               // Column F: Target
+        propertyType: propertyType,                   // Column G: Property Type
+        buildingSize: buildingSize || 'N/A',          // Column J: Building Size
+        landSize: landSize || 'N/A',                  // Column K: Land Size
+        location: locationSummary,                    // Column I: Area
         minPrice: minPrice,
         maxPrice: maxPrice,
         bedrooms: bedrooms,
