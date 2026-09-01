@@ -42,13 +42,22 @@
 
     .logo-container {
       text-align: center;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
-    .logo-container img {
-      max-width: 100px;
-      height: auto;
-      border-radius: 12px;
+    .brand-logo {
+      width: 72px;
+      height: 72px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 1.5rem;
+      letter-spacing: -0.5px;
     }
 
     .header {
@@ -57,7 +66,7 @@
     }
 
     .header h1 {
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       font-weight: 700;
       color: var(--primary);
       margin-bottom: 6px;
@@ -110,7 +119,6 @@
       flex: 1;
     }
 
-    /* Radio / Segmented Control style */
     .segmented-control {
       display: flex;
       background-color: var(--input-bg);
@@ -174,13 +182,13 @@
 
   <div class="container">
     
-    <!-- Top Logo -->
+    <!-- Top Logo Header -->
     <div class="logo-container">
-      <img src="https://khmer25realestate.com/wp-content/uploads/2023/06/25realty-logo.png" alt="25Realty Logo" onerror="this.style.display='none'">
+      <div class="brand-logo">25R</div>
     </div>
 
     <div class="header">
-      <h1>📋 ទម្រង់ព័ត៌មានអតិថិជនស្វែងរកអចលនទ្រព្យ<br><span style="font-size: 1rem; font-weight: 500;">(Client Inquiry Form)</span></h1>
+      <h1>📋 ទម្រង់ព័ត៌មានអតិថិជនស្វែងរកអចលនទ្រព្យ<br><span style="font-size: 0.95rem; font-weight: 500;">(Client Inquiry Form)</span></h1>
       <p>សូមបំពេញព័ត៌មានខាងក្រោម ដើម្បីឲ្យក្រុមការងារជួយស្វែងរកអចលនទ្រព្យជូនអ្នក<br>Please fill in the form below so our team can assist you.</p>
     </div>
 
@@ -340,7 +348,6 @@
       tg.expand();
     }
 
-    // Dynamic Land & Building Size Input visibility based on Property Type Selection
     const propertyTypeSelect = document.getElementById('propertyType');
     const sizeRow = document.getElementById('sizeRow');
     const landSizeGroup = document.getElementById('landSizeGroup');
@@ -363,7 +370,6 @@
       }
     });
 
-    // Handle Form Submission
     const form = document.getElementById('inquiryForm');
     const submitBtn = document.getElementById('submitBtn');
 
