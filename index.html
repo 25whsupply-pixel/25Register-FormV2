@@ -1,350 +1,415 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="km">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>25Realty Registration Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>២៥ រៀលធី | ទម្រង់ស្នើសុំព័ត៌មានអតិថិជន</title>
+  
+  <!-- Telegram Web App SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #f4f5f7;
+    :root {
+      --primary: #10b981;
+      --primary-hover: #059669;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --input-bg: #0f172a;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Kantumruy Pro", "Hanuman", sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
       padding: 16px;
-      color: #333;
+      padding-bottom: 30px;
     }
+
     .container {
-      max-width: 450px;
+      max-width: 500px;
       margin: 0 auto;
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-    .logo-container {
+
+    .header {
       text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .form-group {
       margin-bottom: 16px;
     }
-    .logo-container img {
-      max-width: 140px;
-      height: auto;
-    }
-    h2 {
-      text-align: center;
-      margin-top: 0;
-      margin-bottom: 20px;
-      color: #1a1a1a;
-      font-size: 20px;
-    }
-    .form-group {
-      margin-bottom: 14px;
-    }
+
     label {
       display: block;
-      font-size: 13px;
+      font-size: 0.85rem;
       font-weight: 600;
-      margin-bottom: 4px;
-      color: #555;
+      margin-bottom: 6px;
+      color: var(--text);
     }
+
+    label .required {
+      color: #ef4444;
+    }
+
     input, select, textarea {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
+      padding: 12px;
+      background-color: var(--input-bg);
+      border: 1px solid var(--border);
       border-radius: 8px;
-      font-size: 14px;
-      box-sizing: border-box;
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
     }
-    textarea {
-      resize: vertical;
-      height: 70px;
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
     }
-    .price-row, .grid-2 {
+
+    .row {
       display: flex;
-      gap: 10px;
+      gap: 12px;
     }
-    .price-row .form-group, .grid-2 .form-group {
+
+    .row .form-group {
       flex: 1;
     }
-    #sizeFieldsGroup {
+
+    /* Radio / Segmented Control style */
+    .segmented-control {
+      display: flex;
+      background-color: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .segmented-control input[type="radio"] {
       display: none;
     }
-    button {
+
+    .segmented-control label {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      margin-bottom: 0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .segmented-control input[type="radio"]:checked + label {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    button.btn-submit {
       width: 100%;
-      padding: 12px;
-      background-color: #2481cc;
-      color: white;
+      padding: 14px;
+      background-color: var(--primary);
+      color: #ffffff;
       border: none;
       border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
+      font-size: 1rem;
+      font-weight: 700;
       cursor: pointer;
       margin-top: 10px;
+      transition: background-color 0.2s;
     }
-    button:disabled {
-      background-color: #a0c4e2;
+
+    button.btn-submit:hover {
+      background-color: var(--primary-hover);
+    }
+
+    button.btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <div class="logo-container">
-      <img src="logo.png" alt="25Realty Logo">
+    <div class="header">
+      <h1>📋 ទម្រង់ស្នើសុំព័ត៌មានអតិថិជន</h1>
+      <p>សូមបំពេញព័ត៌មានខាងក្រោម ដើម្បីឲ្យក្រុមការងារជួយស្វែងរកអចលនទ្រព្យជូនអ្នក</p>
     </div>
 
-    <h2>Client Registration</h2>
-
     <form id="inquiryForm">
+
+      <!-- Full Name -->
       <div class="form-group">
-        <label for="fullName">Full Name *</label>
-        <input type="text" id="fullName" required placeholder="John Doe">
+        <label for="fullName">ឈ្មោះអតិថិជន <span class="required">*</span></label>
+        <input type="text" id="fullName" placeholder="ឧទាហរណ៍៖ សុខ ជា" required>
       </div>
 
-      <div class="grid-2">
+      <!-- Phones -->
+      <div class="row">
         <div class="form-group">
-          <label for="phone">Phone Number 1 *</label>
-          <input type="tel" id="phone" required placeholder="012 345 678">
+          <label for="phone">លេខទូរស័ព្ទទី១ <span class="required">*</span></label>
+          <input type="tel" id="phone" placeholder="012 345 678" required>
         </div>
         <div class="form-group">
-          <label for="phone2">Phone Number 2</label>
+          <label for="phone2">លេខទូរស័ព្ទទី២ (ជម្រើស)</label>
           <input type="tel" id="phone2" placeholder="098 765 432">
         </div>
       </div>
 
+      <!-- Telegram Account -->
       <div class="form-group">
-        <label for="telegramAccount">Telegram Account</label>
-        <input type="text" id="telegramAccount" placeholder="e.g. @username or Phone">
+        <label for="telegramAccount">គណនី Telegram <span class="required">*</span></label>
+        <input type="text" id="telegramAccount" placeholder="@username ឬ លេខទូរស័ព្ទ" required>
       </div>
 
-      <div class="grid-2">
-        <div class="form-group">
-          <label for="propertyType">Property Type *</label>
-          <select id="propertyType" required>
-            <option value="House">House</option>
-            <option value="Villa">Villa</option>
-            <option value="Condo">Condo</option>
-            <option value="Land">Land</option>
-            <option value="Warehouse">Warehouse</option>
-          </select>
-        </div>
+      <!-- Target: Buy or Rent -->
+      <div class="form-group">
+        <label>គោលបំណង <span class="required">*</span></label>
+        <div class="segmented-control">
+          <input type="radio" id="targetRent" name="target" value="Rent" checked>
+          <label for="targetRent">ជួល (Rent)</label>
 
-        <div class="form-group">
-          <label for="target">Target *</label>
-          <select id="target" required>
-            <option value="Rent">Rent</option>
-            <option value="Buy">Buy</option>
-          </select>
+          <input type="radio" id="targetBuy" name="target" value="Buy">
+          <label for="targetBuy">ទិញ (Buy)</label>
         </div>
       </div>
 
-      <!-- Size Fields for Land & Warehouse -->
-      <div class="grid-2" id="sizeFieldsGroup">
-        <div class="form-group">
-          <label for="landSize">Land Size (m²) *</label>
-          <input type="text" id="landSize" placeholder="e.g. 4x15">
+      <!-- Property Type -->
+      <div class="form-group">
+        <label for="propertyType">ប្រភេទអចលនទ្រព្យ <span class="required">*</span></label>
+        <select id="propertyType" required>
+          <option value="">-- ជ្រើសរើសប្រភេទ --</option>
+          <option value="House">ផ្ទះអាជីវកម្ម / ផ្ទះល្វែង (House)</option>
+          <option value="Villa">វីឡា (Villa)</option>
+          <option value="Condo">ខុនដូ / អាផាតមិន (Condo)</option>
+          <option value="Land">ដី (Land)</option>
+          <option value="Warehouse">ឃ្លាំង / រោងចក្រ (Warehouse)</option>
+        </select>
+      </div>
+
+      <!-- Dynamic Land / Building Sizes -->
+      <div class="row hidden" id="sizeRow">
+        <div class="form-group hidden" id="landSizeGroup">
+          <label for="landSize">ទំហំដី (Land Size)</label>
+          <input type="text" id="landSize" placeholder="ឧ. 10m x 20m">
         </div>
-        <div class="form-group">
-          <label for="buildingSize">Building Size (m²) *</label>
-          <input type="text" id="buildingSize" placeholder="e.g. 4x12">
+        <div class="form-group hidden" id="buildingSizeGroup">
+          <label for="buildingSize">ទំហំអគារ (Building Size)</label>
+          <input type="text" id="buildingSize" placeholder="ឧ. 8m x 15m">
         </div>
       </div>
 
-      <div class="grid-2">
+      <!-- Locations -->
+      <div class="row">
         <div class="form-group">
-          <label for="location">Preferred Location 1 *</label>
-          <input type="text" id="location" required placeholder="e.g. BKK1">
+          <label for="location">ទីតាំងទី១ <span class="required">*</span></label>
+          <input type="text" id="location" placeholder="ឧ. ទួលគោក" required>
         </div>
         <div class="form-group">
-          <label for="location2">Preferred Location 2</label>
-          <input type="text" id="location2" placeholder="e.g. Toul Kork">
-        </div>
-      </div>
-
-      <div class="price-row">
-        <div class="form-group">
-          <label for="minPrice">Min Budget ($) *</label>
-          <input type="number" id="minPrice" required placeholder="500">
-        </div>
-        <div class="form-group">
-          <label for="maxPrice">Max Budget ($) *</label>
-          <input type="number" id="maxPrice" required placeholder="1500">
+          <label for="location2">ទីតាំងទី២ (ជម្រើស)</label>
+          <input type="text" id="location2" placeholder="ឧ. បឹងកេងកង">
         </div>
       </div>
 
-      <div class="grid-2">
+      <!-- Price Range -->
+      <div class="row">
         <div class="form-group">
-          <label for="bedrooms">Bedrooms</label>
+          <label for="minPrice">ថវិកាអប្បបរមា ($)</label>
+          <input type="number" id="minPrice" placeholder="500">
+        </div>
+        <div class="form-group">
+          <label for="maxPrice">ថវិកាអតិបរមា ($)</label>
+          <input type="number" id="maxPrice" placeholder="2000">
+        </div>
+      </div>
+
+      <!-- Spec details -->
+      <div class="row">
+        <div class="form-group">
+          <label for="bedrooms">បន្ទប់គេង</label>
           <select id="bedrooms">
-            <option value="">Select Bedrooms</option>
+            <option value="Any">មិនកំណត់</option>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="5+">5+</option>
+            <option value="4+">4+</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="bathrooms">Bathrooms</label>
+          <label for="bathrooms">បន្ទប់ទឹក</label>
           <select id="bathrooms">
-            <option value="">Select Bathrooms</option>
+            <option value="Any">មិនកំណត់</option>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="5+">5+</option>
+            <option value="4+">4+</option>
           </select>
         </div>
       </div>
 
-      <div class="grid-2">
+      <div class="row">
         <div class="form-group">
-          <label for="parking">Parking Space</label>
+          <label for="parking">ចំណតរថយន្ត</label>
           <select id="parking">
-            <option value="">Select Parking Option</option>
-            <option value="Car Needed">Car Needed</option>
-            <option value="Moto Only">Moto Only</option>
-            <option value="Not Required">Not Required</option>
+            <option value="Not Specified">មិនកំណត់</option>
+            <option value="Car">រថយន្ត</option>
+            <option value="Moto">ម៉ូតូ</option>
+            <option value="Both">ទាំងពីរ</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="direction">Direction / Facing</label>
+          <label for="direction">ទិសសម្លឹង</label>
           <select id="direction">
-            <option value="">Select Direction</option>
-            <option value="North">North</option>
-            <option value="South">South</option>
-            <option value="East">East</option>
-            <option value="West">West</option>
-            <option value="North-East">North-East</option>
-            <option value="North-West">North-West</option>
-            <option value="South-East">South-East</option>
-            <option value="South-West">South-West</option>
+            <option value="Any">មិនកំណត់</option>
+            <option value="North">ជើង (North)</option>
+            <option value="South">ត្បូង (South)</option>
+            <option value="East">កើត (East)</option>
+            <option value="West">លិច (West)</option>
+            <option value="Northeast">កើតឈៀងជើង (Northeast)</option>
+            <option value="Southeast">កើតឈៀងត្បូង (Southeast)</option>
+            <option value="Northwest">លិចឈៀងជើង (Northwest)</option>
+            <option value="Southwest">លិចឈៀងត្បូង (Southwest)</option>
           </select>
         </div>
       </div>
 
+      <!-- Additional Notes -->
       <div class="form-group">
-        <label for="notes">Additional Notes</label>
-        <textarea id="notes" placeholder="Any specific requirement..."></textarea>
+        <label for="notes">ព័ត៌មានបន្ថែម/តម្រូវការពិសេស</label>
+        <textarea id="notes" rows="3" placeholder="បញ្ជាក់ព័ត៌មានបន្ថែមប្រសិនជាមាន..."></textarea>
       </div>
 
-      <button type="submit" id="submitBtn">Submit Inquiry</button>
+      <!-- Submit Button -->
+      <button type="submit" class="btn-submit" id="submitBtn">ផ្ញើព័ត៌មាន / Submit Inquiry</button>
+
     </form>
   </div>
 
   <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-
-    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-      const user = tg.initDataUnsafe.user;
-      const autoName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
-      if (autoName) {
-        document.getElementById('fullName').value = autoName;
-      }
-      if (user.username) {
-        document.getElementById('telegramAccount').value = `@${user.username}`;
-      }
+    const tg = window.Telegram ? window.Telegram.WebApp : null;
+    if (tg) {
+      tg.ready();
+      tg.expand();
     }
 
+    // Toggle Land & Building Size Inputs based on Property Type Selection
     const propertyTypeSelect = document.getElementById('propertyType');
-    const sizeFieldsGroup = document.getElementById('sizeFieldsGroup');
-    const landSizeInput = document.getElementById('landSize');
-    const buildingSizeInput = document.getElementById('buildingSize');
+    const sizeRow = document.getElementById('sizeRow');
+    const landSizeGroup = document.getElementById('landSizeGroup');
+    const buildingSizeGroup = document.getElementById('buildingSizeGroup');
 
-    function toggleSizeFields() {
-      const selectedType = propertyTypeSelect.value;
-      if (selectedType === 'Land' || selectedType === 'Warehouse') {
-        sizeFieldsGroup.style.display = 'flex';
-        landSizeInput.required = true;
-        buildingSizeInput.required = true;
+    propertyTypeSelect.addEventListener('change', (e) => {
+      const val = e.target.value;
+      if (val === 'Land') {
+        sizeRow.classList.remove('hidden');
+        landSizeGroup.classList.remove('hidden');
+        buildingSizeGroup.classList.add('hidden');
+      } else if (val === 'Warehouse' || val === 'House' || val === 'Villa') {
+        sizeRow.classList.remove('hidden');
+        landSizeGroup.classList.remove('hidden');
+        buildingSizeGroup.classList.remove('hidden');
       } else {
-        sizeFieldsGroup.style.display = 'none';
-        landSizeInput.required = false;
-        buildingSizeInput.required = false;
-        landSizeInput.value = '';
-        buildingSizeInput.value = '';
+        sizeRow.classList.add('hidden');
+        landSizeGroup.classList.add('hidden');
+        buildingSizeGroup.classList.add('hidden');
       }
-    }
+    });
 
-    propertyTypeSelect.addEventListener('change', toggleSizeFields);
-    toggleSizeFields();
-
+    // Handle Form Submission
     const form = document.getElementById('inquiryForm');
     const submitBtn = document.getElementById('submitBtn');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       submitBtn.disabled = true;
-      submitBtn.innerText = 'Submitting...';
+      submitBtn.innerText = 'កំពុងផ្ញើ...';
 
-      const user = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+      // Capture User Telegram Context if available
+      const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
 
-      const tgUserId = user ? user.id : null;
-      const tgUsername = user && user.username ? user.username : null;
-      const tgFirstName = user ? (user.first_name || '') : '';
-      const tgLastName = user ? (user.last_name || '') : '';
-
+      // Format current timestamp (Phnom Penh time)
       const now = new Date();
-      const options = { 
-        timeZone: 'Asia/Phnom_Penh', 
-        day: '2-digit', 
-        month: 'short', 
-        year: 'numeric', 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        hour12: true 
-      };
-      const submittedAtStr = now.toLocaleString('en-GB', options).replace(',', '');
+      const formattedDate = now.toLocaleString('en-GB', { timeZone: 'Asia/Phnom_Penh' });
 
-      const formData = {
-        chat_id: tgUserId,
-        tgUserId: tgUserId,
-        tgUsername: tgUsername,
-        tgFirstName: tgFirstName,
-        tgLastName: tgLastName,
-        telegramAccount: document.getElementById('telegramAccount').value,
-        submittedAt: submittedAtStr,
-        fullName: document.getElementById('fullName').value,
-        phone: document.getElementById('phone').value,
-        phone2: document.getElementById('phone2').value,
+      const payload = {
+        fullName: document.getElementById('fullName').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        phone2: document.getElementById('phone2').value.trim(),
+        telegramAccount: document.getElementById('telegramAccount').value.trim(),
+        target: document.querySelector('input[name="target"]:checked').value,
         propertyType: propertyTypeSelect.value,
-        target: document.getElementById('target').value,
-        landSize: landSizeInput.value,
-        buildingSize: buildingSizeInput.value,
-        location: document.getElementById('location').value,
-        location2: document.getElementById('location2').value,
-        minPrice: document.getElementById('minPrice').value,
-        maxPrice: document.getElementById('maxPrice').value,
+        landSize: document.getElementById('landSize').value.trim(),
+        buildingSize: document.getElementById('buildingSize').value.trim(),
+        location: document.getElementById('location').value.trim(),
+        location2: document.getElementById('location2').value.trim(),
+        minPrice: document.getElementById('minPrice').value || '0',
+        maxPrice: document.getElementById('maxPrice').value || '0',
         bedrooms: document.getElementById('bedrooms').value,
         bathrooms: document.getElementById('bathrooms').value,
         parking: document.getElementById('parking').value,
         direction: document.getElementById('direction').value,
-        notes: document.getElementById('notes').value
+        notes: document.getElementById('notes').value.trim(),
+        submittedAt: formattedDate,
+        chat_id: user ? user.id : null,
+        tgUserId: user ? user.id : null,
+        tgUsername: user ? user.username : '',
+        tgFirstName: user ? user.first_name : '',
+        tgLastName: user ? user.last_name : ''
       };
 
       try {
-        const response = await fetch('/submit-form', {
+        const res = await fetch('/submit-form', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(formData)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
         });
 
-        if (response.ok) {
-          tg.close();
+        if (res.ok) {
+          if (tg) {
+            tg.close();
+          } else {
+            alert('ព័ត៌មានត្រូវបានផ្ញើដោយជោគជ័យ! សូមអរគុណ។');
+            form.reset();
+          }
         } else {
-          const errData = await response.json().catch(() => ({}));
-          alert('Submission error: ' + (errData.error || response.statusText));
-          submitBtn.disabled = false;
-          submitBtn.innerText = 'Submit Inquiry';
+          alert('មានបញ្ហាក្នុងការផ្ញើ សូមព្យាយាមម្តងទៀត។');
         }
       } catch (err) {
-        alert('Network Connection Error. Try again in 10 seconds.');
+        console.error('Submission Error:', err);
+        alert('មានបញ្ហាបច្ចេកទេស សូមព្យាយាមម្តងទៀត។');
+      } finally {
         submitBtn.disabled = false;
-        submitBtn.innerText = 'Submit Inquiry';
+        submitBtn.innerText = 'ផ្ញើព័ត៌មាន / Submit Inquiry';
       }
     });
   </script>
