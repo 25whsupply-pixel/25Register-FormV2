@@ -76,7 +76,6 @@ bot.onText(/\/start/, (msg) => {
 bot.on('callback_query', async (query) => {
   const { id, data, message, from } = query;
   
-  // 1. Handle Status Buttons: Accepted / Rejected
   if (data.startsWith('status_')) {
     const statusType = data.replace('status_', '');
     let statusBadge = '🟢 Accepted';
@@ -102,7 +101,6 @@ bot.on('callback_query', async (query) => {
     }
   }
 
-  // 2. Handle Manual Text Edit Request by Group Owner/Admin
   if (data === 'edit_inquiry') {
     activeEditSessions.set(from.id, {
       chatId: message.chat.id,
@@ -129,7 +127,6 @@ bot.on('message', async (msg) => {
   const session = activeEditSessions.get(msg.from.id);
   if (session) {
     let newText = escapeHtml(msg.text);
-
     let editorTag = msg.from.username ? `@${msg.from.username}` : `${msg.from.first_name}`.trim();
 
     if (newText.includes('Edited by:')) {
@@ -151,7 +148,6 @@ bot.on('message', async (msg) => {
     };
 
     try {
-      // Update original inquiry card
       await bot.editMessageText(newText, {
         chat_id: session.chatId,
         message_id: session.messageId,
@@ -159,15 +155,12 @@ bot.on('message', async (msg) => {
         reply_markup: keyboard
       });
 
-      // Auto-delete admin reply message
       await bot.deleteMessage(msg.chat.id, msg.message_id).catch(() => {});
 
-      // Auto-delete prompt message
       if (session.promptMessageId) {
         await bot.deleteMessage(msg.chat.id, session.promptMessageId).catch(() => {});
       }
 
-      // Auto-deleting success alert (15 seconds)
       const confirmMsg = await bot.sendMessage(
         msg.chat.id, 
         "✅ Card updated successfully!", 
@@ -188,6 +181,7 @@ bot.on('message', async (msg) => {
 app.post('/submit-form', async (req, res) => {
   console.log("Form payload received:", req.body);
   const data = req.body;
+  const lang = data.lang || 'km';
 
   // Form Fields
   const name = escapeHtml(data.fullName) || 'N/A';
@@ -236,7 +230,7 @@ app.post('/submit-form', async (req, res) => {
     submittedByPlain = `${userFullName} (ID: ${data.tgUserId})`;
   }
 
-  // 1. Alert Notification to Telegram Group Topic
+  // 1. Alert Notification to Telegram Group Topic (Internal Admin Format)
   if (GROUP_CHAT_ID) {
     const groupMessage = 
 `🚨 <b>NEW CLIENT INQUIRY ALERT</b> 🚨
@@ -278,17 +272,18 @@ app.post('/submit-form', async (req, res) => {
 
     await bot.sendMessage(GROUP_CHAT_ID, groupMessage, options)
       .catch(err => console.error("Group Alert Error:", err.message));
-  } else {
-    console.error("GROUP_CHAT_ID not set in process.env");
   }
 
-  // 2. Direct Confirmation Message to Client User
+  // 2. Direct Confirmation Message to Client (Formatted in Chosen Language)
   if (data.chat_id) {
-    let sizeClientText = '';
-    if (landSize) sizeClientText += `\n• Land Size: ${landSize}`;
-    if (buildingSize) sizeClientText += `\n• Building Size: ${buildingSize}`;
+    let clientMessage = '';
+    
+    if (lang === 'en') {
+      let sizeClientText = '';
+      if (landSize) sizeClientText += `\n• <b>Land Size:</b> ${landSize}`;
+      if (buildingSize) sizeClientText += `\n• <b>Building Size:</b> ${buildingSize}`;
 
-    const clientMessage = 
+      clientMessage = 
 `✅ <b>Registration Received!</b>
 
 Thank you, ${name}, for registering with 25Realty.
@@ -296,7 +291,7 @@ Thank you, ${name}, for registering with 25Realty.
 <b>Summary of Details:</b>
 • <b>Phone:</b> ${phoneSummary}
 • <b>Telegram Account:</b> ${telegramAccount}
-• <b>Target:</b> ${target}
+• <b>Purpose:</b> ${target}
 • <b>Property Type:</b> ${propertyType}${sizeClientText}
 • <b>Preferred Location:</b> ${locationSummary}
 • <b>Price Range:</b> $${minPrice} - $${maxPrice}
@@ -306,25 +301,56 @@ Thank you, ${name}, for registering with 25Realty.
 • <b>Direction:</b> ${direction}
 • <b>Notes:</b> ${notes}
 
-<b>Submitted Date :</b> ${submittedAt}
+<b>Submitted Date:</b> ${submittedAt}
 <b>Submitted By:</b> ${submittedByLink}
 
 Our team will contact you shortly!`;
+    } else {
+      let sizeClientText = '';
+      if (landSize) sizeClientText += `\n• <b>ទំហំដី:</b> ${landSize}`;
+      if (buildingSize) sizeClientText += `\n• <b>ទំហំអគារ:</b> ${buildingSize}`;
+
+      clientMessage = 
+`✅ <b>ទទួលបានព័ត៌មានចុះឈ្មោះរួចរាល់!</b>
+
+សូមអរគុណ ${name} ដែលបានចុះឈ្មោះជាមួយ 25Realty។
+
+<b>សង្ខេបព័ត៌មាន៖</b>
+• <b>លេខទូរស័ព្ទ:</b> ${phoneSummary}
+• <b>គណនី Telegram:</b> ${telegramAccount}
+• <b>គោលបំណង:</b> ${target === 'Rent' ? 'ជួល' : 'ទិញ'}
+• <b>ប្រភេទអចលនទ្រព្យ:</b> ${propertyType}${sizeClientText}
+• <b>ទីតាំងចង់បាន:</b> ${locationSummary}
+• <b>ថវិកា:</b> $${minPrice} - $${maxPrice}
+• <b>បន្ទប់គេង:</b> ${bedrooms}
+• <b>បន្ទប់ទឹក:</b> ${bathrooms}
+• <b>ចំណតរថយន្ត:</b> ${parking}
+• <b>បែរមុខទៅ:</b> ${direction}
+• <b>ព័ត៌មានបន្ថែម:</b> ${notes}
+
+<b>កាលបរិច្ឆេទ:</b> ${submittedAt}
+<b>ផ្ញើដោយ:</b> ${submittedByLink}
+
+ក្រុមការងារយើងខ្ញុំនឹងទាក់ទងទៅអ្នកក្នុងពេលឆាប់ៗនេះ!`;
+    }
 
     await bot.sendMessage(data.chat_id, clientMessage, { parse_mode: 'HTML' })
       .catch(err => console.error("Client DM Error:", err.message));
 
-    // Follow-up Message after 5 seconds delay
+    // Follow-up Channel Promo Message
     setTimeout(() => {
-      const followUpText = "ដើម្បីតាមដានពួកយើង សូមចូលឆាណែលតេឡេក្រាមខាងក្រោម👇";
+      const followUpText = lang === 'en' 
+        ? "To follow our listings, please join our Telegram channels below 👇" 
+        : "ដើម្បីតាមដានពួកយើង សូមចូលឆាណែលតេឡេក្រាមខាងក្រោម👇";
+
       const followUpOptions = {
         reply_markup: {
           inline_keyboard: [
             [
-              { text: "អចលនទ្រព្យ ជួល", url: "https://t.me/+wbOpMBLS6t1hYzY1" }
+              { text: lang === 'en' ? "Property For Rent" : "អចលនទ្រព្យ ជួល", url: "https://t.me/+wbOpMBLS6t1hYzY1" }
             ],
             [
-              { text: "អចលនទ្រព្យ លក់", url: "https://t.me/khmer25service" }
+              { text: lang === 'en' ? "Property For Sale" : "អចលនទ្រព្យ លក់", url: "https://t.me/khmer25service" }
             ]
           ]
         }
@@ -335,19 +361,19 @@ Our team will contact you shortly!`;
     }, 5000);
   }
 
-  // 3. Google Sheets Endpoint (Appends single quote ' to force text format for leading zero)
+  // 3. Google Sheets Endpoint
   if (SCRIPT_URL) {
     try {
       const sheetPayload = {
         fullName: name,
-        phone1: phone1 ? `'${phone1}` : 'N/A',       // Column C: Tel 1
-        phone2: phone2 ? `'${phone2}` : 'N/A',       // Column D: Tel 2
-        telegramAccount: telegramAccount,             // Column E: Telegram
-        target: target,                               // Column F: Target
-        propertyType: propertyType,                   // Column G: Property Type
-        buildingSize: buildingSize || 'N/A',          // Column J: Building Size
-        landSize: landSize || 'N/A',                  // Column K: Land Size
-        location: locationSummary,                    // Column I: Area
+        phone1: phone1 ? `'${phone1}` : 'N/A',
+        phone2: phone2 ? `'${phone2}` : 'N/A',
+        telegramAccount: telegramAccount,
+        target: target,
+        propertyType: propertyType,
+        buildingSize: buildingSize || 'N/A',
+        landSize: landSize || 'N/A',
+        location: locationSummary,
         minPrice: minPrice,
         maxPrice: maxPrice,
         bedrooms: bedrooms,
