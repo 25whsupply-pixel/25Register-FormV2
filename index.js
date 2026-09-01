@@ -56,15 +56,20 @@ app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
 
+// Welcome Message in Khmer
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
-  bot.sendMessage(chatId, "Welcome to 25Realty Inquiry Portal!\n\nClick the button below to open the form:", {
-    reply_markup: {
-      inline_keyboard: [
-        [{ text: "📋 Open Registration Form", web_app: { url: WEB_APP_URL } }]
-      ]
+  bot.sendMessage(
+    chatId, 
+    "25Realty សូមស្វាគមន៍ 🙏\nសូមចុចប៊ូតុងខាងក្រោម ឬ Register Form នៅខាងក្រោមផ្នែកខាងឆ្វេង ដើម្បីជ្រើសរើសពាក្យដែលអ្នកចង់បំពេញ📝", 
+    {
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "📋 បំពេញទម្រង់បែបបទ / Register Form", web_app: { url: WEB_APP_URL } }]
+        ]
+      }
     }
-  });
+  );
 });
 
 // Handle Callback Queries (Buttons: Accept, Reject, Edit)
@@ -113,7 +118,6 @@ bot.on('callback_query', async (query) => {
       { parse_mode: 'HTML', message_thread_id: message.message_thread_id }
     );
 
-    // Save prompt message ID to clean it up later if needed
     activeEditSessions.get(from.id).promptMessageId = promptMsg.message_id;
   }
 });
@@ -126,15 +130,12 @@ bot.on('message', async (msg) => {
   if (session) {
     let newText = escapeHtml(msg.text);
 
-    // Get Editor Telegram tag
     let editorTag = msg.from.username ? `@${msg.from.username}` : `${msg.from.first_name}`.trim();
 
-    // Strip out previous "Edited by" block if present in user submission
     if (newText.includes('Edited by:')) {
       newText = newText.split('\n\n<i>Edited by:')[0];
     }
 
-    // Append "Edited by" attribution line in light italic format
     newText += `\n\n<i>Edited by: ${editorTag}</i>`;
 
     const keyboard = {
@@ -150,7 +151,7 @@ bot.on('message', async (msg) => {
     };
 
     try {
-      // 1. Update the original inquiry card
+      // Update original inquiry card
       await bot.editMessageText(newText, {
         chat_id: session.chatId,
         message_id: session.messageId,
@@ -158,15 +159,15 @@ bot.on('message', async (msg) => {
         reply_markup: keyboard
       });
 
-      // 2. Delete Admin's input message to keep channel clean
+      // Auto-delete admin reply message
       await bot.deleteMessage(msg.chat.id, msg.message_id).catch(() => {});
 
-      // 3. Delete prompt message if active
+      // Auto-delete prompt message
       if (session.promptMessageId) {
         await bot.deleteMessage(msg.chat.id, session.promptMessageId).catch(() => {});
       }
 
-      // 4. Send notification message and auto-delete after 15 seconds
+      // Auto-deleting success alert (15 seconds)
       const confirmMsg = await bot.sendMessage(
         msg.chat.id, 
         "✅ Card updated successfully!", 
@@ -219,12 +220,10 @@ app.post('/submit-form', async (req, res) => {
   const direction = escapeHtml(data.direction) || 'N/A';
   const notes = escapeHtml(data.notes) || 'N/A';
 
-  // Build Size Info string if available
   let sizeText = '';
   if (landSize) sizeText += `\n📐 Land Size: ${landSize}`;
   if (buildingSize) sizeText += `\n🏢 Building Size: ${buildingSize}`;
 
-  // Build Telegram User Account Identifiers
   let submittedByLink = 'N/A';
   let submittedByPlain = 'N/A';
 
@@ -237,7 +236,7 @@ app.post('/submit-form', async (req, res) => {
     submittedByPlain = `${userFullName} (ID: ${data.tgUserId})`;
   }
 
-  // 1. Alert Notification to Telegram Group / Topic
+  // 1. Alert Notification to Telegram Group Topic
   if (GROUP_CHAT_ID) {
     const groupMessage = 
 `🚨 <b>NEW CLIENT INQUIRY ALERT</b> 🚨
