@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>២៥ រៀលធី | ទម្រង់ស្នើសុំព័ត៌មានអតិថិជន</title>
+  <title>២៥ រៀលធី | ទម្រង់ព័ត៌មានអតិថិជនស្វែងរកអចលនទ្រព្យ</title>
   
   <!-- Telegram Web App SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -40,16 +40,28 @@
       margin: 0 auto;
     }
 
+    .logo-container {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .logo-container img {
+      max-width: 100px;
+      height: auto;
+      border-radius: 12px;
+    }
+
     .header {
       text-align: center;
       margin-bottom: 20px;
     }
 
     .header h1 {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       font-weight: 700;
       color: var(--primary);
       margin-bottom: 6px;
+      line-height: 1.4;
     }
 
     .header p {
@@ -161,54 +173,60 @@
 <body>
 
   <div class="container">
+    
+    <!-- Top Logo -->
+    <div class="logo-container">
+      <img src="https://khmer25realestate.com/wp-content/uploads/2023/06/25realty-logo.png" alt="25Realty Logo" onerror="this.style.display='none'">
+    </div>
+
     <div class="header">
-      <h1>📋 ទម្រង់ស្នើសុំព័ត៌មានអតិថិជន</h1>
-      <p>សូមបំពេញព័ត៌មានខាងក្រោម ដើម្បីឲ្យក្រុមការងារជួយស្វែងរកអចលនទ្រព្យជូនអ្នក</p>
+      <h1>📋 ទម្រង់ព័ត៌មានអតិថិជនស្វែងរកអចលនទ្រព្យ<br><span style="font-size: 1rem; font-weight: 500;">(Client Inquiry Form)</span></h1>
+      <p>សូមបំពេញព័ត៌មានខាងក្រោម ដើម្បីឲ្យក្រុមការងារជួយស្វែងរកអចលនទ្រព្យជូនអ្នក<br>Please fill in the form below so our team can assist you.</p>
     </div>
 
     <form id="inquiryForm">
 
       <!-- Full Name -->
       <div class="form-group">
-        <label for="fullName">ឈ្មោះអតិថិជន <span class="required">*</span></label>
-        <input type="text" id="fullName" placeholder="ឧទាហរណ៍៖ សុខ ជា" required>
+        <label for="fullName">ឈ្មោះអតិថិជន / Full Name <span class="required">*</span></label>
+        <input type="text" id="fullName" placeholder="ឧទាហរណ៍៖ សុខ ជា / Sok Chea" required>
       </div>
 
       <!-- Phones -->
       <div class="row">
         <div class="form-group">
-          <label for="phone">លេខទូរស័ព្ទទី១ <span class="required">*</span></label>
+          <label for="phone">លេខទូរស័ព្ទទី១ / Tel 1 <span class="required">*</span></label>
           <input type="tel" id="phone" placeholder="012 345 678" required>
         </div>
         <div class="form-group">
-          <label for="phone2">លេខទូរស័ព្ទទី២ (ជម្រើស)</label>
+          <label for="phone2">លេខទូរស័ព្ទទី២ / Tel 2</label>
           <input type="tel" id="phone2" placeholder="098 765 432">
         </div>
       </div>
 
       <!-- Telegram Account -->
       <div class="form-group">
-        <label for="telegramAccount">គណនី Telegram <span class="required">*</span></label>
+        <label for="telegramAccount">គណនី Telegram / Telegram Account <span class="required">*</span></label>
         <input type="text" id="telegramAccount" placeholder="@username ឬ លេខទូរស័ព្ទ" required>
       </div>
 
       <!-- Target: Buy or Rent -->
       <div class="form-group">
-        <label>គោលបំណង <span class="required">*</span></label>
+        <label>គោលបំណង / Purpose <span class="required">*</span></label>
         <div class="segmented-control">
           <input type="radio" id="targetRent" name="target" value="Rent" checked>
-          <label for="targetRent">ជួល (Rent)</label>
+          <label for="targetRent">ជួល / Rent</label>
 
           <input type="radio" id="targetBuy" name="target" value="Buy">
-          <label for="targetBuy">ទិញ (Buy)</label>
+          <label for="targetBuy">ទិញ / Buy</label>
         </div>
       </div>
 
       <!-- Property Type -->
       <div class="form-group">
-        <label for="propertyType">ប្រភេទអចលនទ្រព្យ <span class="required">*</span></label>
+        <label for="propertyType">ប្រភេទអចលនទ្រព្យ / Property Type <span class="required">*</span></label>
         <select id="propertyType" required>
-          <option value="">-- ជ្រើសរើសប្រភេទ --</option>
+          <option value="">-- ជ្រើសរើស / Select Type --</option>
           <option value="House">ផ្ទះអាជីវកម្ម / ផ្ទះល្វែង (House)</option>
           <option value="Villa">វីឡា (Villa)</option>
           <option value="Condo">ខុនដូ / អាផាតមិន (Condo)</option>
@@ -220,11 +238,11 @@
       <!-- Dynamic Land / Building Sizes -->
       <div class="row hidden" id="sizeRow">
         <div class="form-group hidden" id="landSizeGroup">
-          <label for="landSize">ទំហំដី (Land Size)</label>
+          <label for="landSize">ទំហំដី / Land Size</label>
           <input type="text" id="landSize" placeholder="ឧ. 10m x 20m">
         </div>
         <div class="form-group hidden" id="buildingSizeGroup">
-          <label for="buildingSize">ទំហំអគារ (Building Size)</label>
+          <label for="buildingSize">ទំហំអគារ / Building Size</label>
           <input type="text" id="buildingSize" placeholder="ឧ. 8m x 15m">
         </div>
       </div>
@@ -232,23 +250,23 @@
       <!-- Locations -->
       <div class="row">
         <div class="form-group">
-          <label for="location">ទីតាំងទី១ <span class="required">*</span></label>
-          <input type="text" id="location" placeholder="ឧ. ទួលគោក" required>
+          <label for="location">ទីតាំងទី១ / Location 1 <span class="required">*</span></label>
+          <input type="text" id="location" placeholder="ឧ. ទួលគោក / Toul Kork" required>
         </div>
         <div class="form-group">
-          <label for="location2">ទីតាំងទី២ (ជម្រើស)</label>
-          <input type="text" id="location2" placeholder="ឧ. បឹងកេងកង">
+          <label for="location2">ទីតាំងទី២ / Location 2</label>
+          <input type="text" id="location2" placeholder="ឧ. បឹងកេងកង / BKK">
         </div>
       </div>
 
       <!-- Price Range -->
       <div class="row">
         <div class="form-group">
-          <label for="minPrice">ថវិកាអប្បបរមា ($)</label>
+          <label for="minPrice">ថវិកាអប្បបរមា / Min Price ($)</label>
           <input type="number" id="minPrice" placeholder="500">
         </div>
         <div class="form-group">
-          <label for="maxPrice">ថវិកាអតិបរមា ($)</label>
+          <label for="maxPrice">ថវិកាអតិបរមា / Max Price ($)</label>
           <input type="number" id="maxPrice" placeholder="2000">
         </div>
       </div>
@@ -256,9 +274,9 @@
       <!-- Spec details -->
       <div class="row">
         <div class="form-group">
-          <label for="bedrooms">បន្ទប់គេង</label>
+          <label for="bedrooms">បន្ទប់គេង / Bedrooms</label>
           <select id="bedrooms">
-            <option value="Any">មិនកំណត់</option>
+            <option value="Any">មិនកំណត់ / Any</option>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -266,9 +284,9 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="bathrooms">បន្ទប់ទឹក</label>
+          <label for="bathrooms">បន្ទប់ទឹក / Bathrooms</label>
           <select id="bathrooms">
-            <option value="Any">មិនកំណត់</option>
+            <option value="Any">មិនកំណត់ / Any</option>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -279,33 +297,33 @@
 
       <div class="row">
         <div class="form-group">
-          <label for="parking">ចំណតរថយន្ត</label>
+          <label for="parking">ចំណតរថយន្ត / Parking</label>
           <select id="parking">
-            <option value="Not Specified">មិនកំណត់</option>
-            <option value="Car">រថយន្ត</option>
-            <option value="Moto">ម៉ូតូ</option>
-            <option value="Both">ទាំងពីរ</option>
+            <option value="Not Specified">មិនកំណត់ / Any</option>
+            <option value="Car">រថយន្ត / Car</option>
+            <option value="Moto">ម៉ូតូ / Moto</option>
+            <option value="Both">ទាំងពីរ / Both</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="direction">ទិសសម្លឹង</label>
+          <label for="direction">បែរមុខទៅ / Direction</label>
           <select id="direction">
-            <option value="Any">មិនកំណត់</option>
-            <option value="North">ជើង (North)</option>
-            <option value="South">ត្បូង (South)</option>
-            <option value="East">កើត (East)</option>
-            <option value="West">លិច (West)</option>
-            <option value="Northeast">កើតឈៀងជើង (Northeast)</option>
-            <option value="Southeast">កើតឈៀងត្បូង (Southeast)</option>
-            <option value="Northwest">លិចឈៀងជើង (Northwest)</option>
-            <option value="Southwest">លិចឈៀងត្បូង (Southwest)</option>
+            <option value="Any">មិនកំណត់ / Any</option>
+            <option value="North">ជើង / North</option>
+            <option value="South">ត្បូង / South</option>
+            <option value="East">កើត / East</option>
+            <option value="West">លិច / West</option>
+            <option value="Northeast">កើតឈៀងជើង / Northeast</option>
+            <option value="Southeast">កើតឈៀងត្បូង / Southeast</option>
+            <option value="Northwest">លិចឈៀងជើង / Northwest</option>
+            <option value="Southwest">លិចឈៀងត្បូង / Southwest</option>
           </select>
         </div>
       </div>
 
       <!-- Additional Notes -->
       <div class="form-group">
-        <label for="notes">ព័ត៌មានបន្ថែម/តម្រូវការពិសេស</label>
+        <label for="notes">ព័ត៌មានបន្ថែម / Additional Notes</label>
         <textarea id="notes" rows="3" placeholder="បញ្ជាក់ព័ត៌មានបន្ថែមប្រសិនជាមាន..."></textarea>
       </div>
 
@@ -322,7 +340,7 @@
       tg.expand();
     }
 
-    // Toggle Land & Building Size Inputs based on Property Type Selection
+    // Dynamic Land & Building Size Input visibility based on Property Type Selection
     const propertyTypeSelect = document.getElementById('propertyType');
     const sizeRow = document.getElementById('sizeRow');
     const landSizeGroup = document.getElementById('landSizeGroup');
@@ -352,12 +370,10 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       submitBtn.disabled = true;
-      submitBtn.innerText = 'កំពុងផ្ញើ...';
+      submitBtn.innerText = 'កំពុងផ្ញើ... / Sending...';
 
-      // Capture User Telegram Context if available
       const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
 
-      // Format current timestamp (Phnom Penh time)
       const now = new Date();
       const formattedDate = now.toLocaleString('en-GB', { timeZone: 'Asia/Phnom_Penh' });
 
@@ -398,15 +414,15 @@
           if (tg) {
             tg.close();
           } else {
-            alert('ព័ត៌មានត្រូវបានផ្ញើដោយជោគជ័យ! សូមអរគុណ។');
+            alert('ព័ត៌មានត្រូវបានផ្ញើដោយជោគជ័យ! សូមអរគុណ / Inquiry submitted successfully!');
             form.reset();
           }
         } else {
-          alert('មានបញ្ហាក្នុងការផ្ញើ សូមព្យាយាមម្តងទៀត។');
+          alert('មានបញ្ហាក្នុងការផ្ញើ សូមព្យាយាមម្តងទៀត / Error submitting form, please try again.');
         }
       } catch (err) {
         console.error('Submission Error:', err);
-        alert('មានបញ្ហាបច្ចេកទេស សូមព្យាយាមម្តងទៀត។');
+        alert('មានបញ្ហាបច្ចេកទេស សូមព្យាយាមម្តងទៀត / Technical error, please try again.');
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = 'ផ្ញើព័ត៌មាន / Submit Inquiry';
