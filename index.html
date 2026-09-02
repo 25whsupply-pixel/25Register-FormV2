@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>២៥ រៀលធី | 25Realty Form</title>
-  
-  <!-- Telegram Web App SDK -->
+  <title>២៥ រៀលធី | Client Inquiry</title>
+
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  
+
   <style>
     :root {
       --primary: #10b981;
@@ -159,11 +158,11 @@
     .segmented-control label {
       flex: 1;
       text-align: center;
-      padding: 10px;
+      padding: 10px 4px;
       margin-bottom: 0;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
       color: var(--text-muted);
       transition: all 0.2s;
@@ -220,34 +219,14 @@
 
     <div class="header">
       <h1 id="titleText">📋 ទម្រង់ព័ត៌មានអតិថិជនស្វែងរកអចលនទ្រព្យ</h1>
-      <p id="subtitleText">សូមបំពេញព័ត៌មានខាងក្រោម ដើម្បីឲ្យក្រុមការងារជួយស្វែងរកអចលនទ្រព្យជូនអ្នក</p>
+      <p id="subtitleText">សូមបំពេញព័ត៌មានខាងក្រោម ដើម្បីឱ្យក្រុមការងារយើងខ្ញុំជួយស្វែងរកអចលនទ្រព្យដែលសមស្របបំផុត</p>
     </div>
 
     <form id="inquiryForm">
 
+      <!-- Target Segmented Control -->
       <div class="form-group">
-        <label id="lblFullName" for="fullName">ឈ្មោះអតិថិជន <span class="required">*</span></label>
-        <input type="text" id="fullName" placeholder="ឧទាហរណ៍៖ សុខ ជា" required>
-      </div>
-
-      <div class="row">
-        <div class="form-group">
-          <label id="lblPhone" for="phone">លេខទូរស័ព្ទទី១ <span class="required">*</span></label>
-          <input type="tel" id="phone" placeholder="012 345 678" required>
-        </div>
-        <div class="form-group">
-          <label id="lblPhone2" for="phone2">លេខទូរស័ព្ទទី២</label>
-          <input type="tel" id="phone2" placeholder="098 765 432">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label id="lblTg" for="telegramAccount">គណនី Telegram <span class="required">*</span></label>
-        <input type="text" id="telegramAccount" placeholder="@username ឬ លេខទូរស័ព្ទ" required>
-      </div>
-
-      <div class="form-group">
-        <label id="lblTarget">គោលបំណង <span class="required">*</span></label>
+        <label id="lblTarget">គោលបំណង (Target) <span class="required">*</span></label>
         <div class="segmented-control">
           <input type="radio" id="targetRent" name="target" value="Rent" checked>
           <label id="lblRent" for="targetRent">ជួល</label>
@@ -257,56 +236,64 @@
         </div>
       </div>
 
+      <!-- Property Type Dropdown -->
       <div class="form-group">
-        <label id="lblPropType" for="propertyType">ប្រភេទអចលនទ្រព្យ <span class="required">*</span></label>
+        <label id="lblPropType" for="propertyType">ប្រភេទអចលនទ្រព្យ (Property Type) <span class="required">*</span></label>
         <select id="propertyType" required>
           <option value="" id="optTypeDefault">-- ជ្រើសរើស --</option>
-          <option value="House" id="optTypeHouse">ផ្ទះអាជីវកម្ម / ផ្ទះល្វែង</option>
+          <option value="House / Flat House" id="optTypeHouse">ផ្ទះ / ផ្ទះល្វែង</option>
+          <option value="Shophouse" id="optTypeShophouse">ផ្ទះអាជីវកម្ម</option>
           <option value="Villa" id="optTypeVilla">វីឡា</option>
-          <option value="Condo" id="optTypeCondo">ខុនដូ / អាផាតមិន</option>
+          <option value="Condo" id="optTypeCondo">ខុនដូ</option>
+          <option value="Apartment" id="optTypeApartment">អាផាតមិន</option>
           <option value="Land" id="optTypeLand">ដី</option>
-          <option value="Warehouse" id="optTypeWarehouse">ឃ្លាំង / រោងចក្រ</option>
+          <option value="Warehouse" id="optTypeWarehouse">ឃ្លាំង</option>
+          <option value="Factory" id="optTypeFactory">រោងចក្រ</option>
         </select>
       </div>
 
-      <div class="row hidden" id="sizeRow">
-        <div class="form-group hidden" id="landSizeGroup">
-          <label id="lblLandSize" for="landSize">ទំហំដី</label>
-          <input type="text" id="landSize" placeholder="ឧ. 10m x 20m">
+      <!-- Price Range -->
+      <div class="row">
+        <div class="form-group">
+          <label id="lblMinPrice" for="minPrice">តម្លៃអប្បបរមា ($)</label>
+          <input type="number" id="minPrice" placeholder="0">
         </div>
-        <div class="form-group hidden" id="buildingSizeGroup">
-          <label id="lblBuildingSize" for="buildingSize">ទំហំអគារ</label>
-          <input type="text" id="buildingSize" placeholder="ឧ. 8m x 15m">
+        <div class="form-group">
+          <label id="lblMaxPrice" for="maxPrice">តម្លៃអតិបរមា ($) <span class="required">*</span></label>
+          <input type="number" id="maxPrice" placeholder="50000" required>
         </div>
       </div>
 
+      <!-- Preferred Locations -->
       <div class="row">
         <div class="form-group">
-          <label id="lblLoc1" for="location">ទីតាំងទី១ <span class="required">*</span></label>
-          <input type="text" id="location" placeholder="ឧ. ទួលគោក" required>
+          <label id="lblLoc1" for="location1">ទីតាំងទី១ <span class="required">*</span></label>
+          <input type="text" id="location1" placeholder="ខណ្ឌ ឬ តំបន់" required>
         </div>
         <div class="form-group">
           <label id="lblLoc2" for="location2">ទីតាំងទី២</label>
-          <input type="text" id="location2" placeholder="ឧ. បឹងកេងកង">
+          <input type="text" id="location2" placeholder="ខណ្ឌ ឬ តំបន់">
         </div>
       </div>
 
+      <!-- Land & Building Size -->
       <div class="row">
         <div class="form-group">
-          <label id="lblMinPrice" for="minPrice">ថវិកាអប្បបរមា ($)</label>
-          <input type="number" id="minPrice" placeholder="500">
+          <label id="lblBuildingSize" for="buildingSize">ទំហំអគារ (Building Size)</label>
+          <input type="text" id="buildingSize" placeholder="ឧ. 8m x 15m">
         </div>
         <div class="form-group">
-          <label id="lblMaxPrice" for="maxPrice">ថវិកាអតិបរមា ($)</label>
-          <input type="number" id="maxPrice" placeholder="2000">
+          <label id="lblLandSize" for="landSize">ទំហំដី (Land Size)</label>
+          <input type="text" id="landSize" placeholder="ឧ. 10m x 20m">
         </div>
       </div>
 
-      <div class="row">
+      <!-- Bedrooms & Bathrooms (Hidden when Land is selected) -->
+      <div class="row" id="bedBathRow">
         <div class="form-group">
-          <label id="lblBedrooms" for="bedrooms">បន្ទប់គេង</label>
+          <label id="lblBedrooms" for="bedrooms">បន្ទប់គេង (Bedrooms)</label>
           <select id="bedrooms">
-            <option value="Any" id="optBedAny">មិនកំណត់</option>
+            <option value="Any">Any</option>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -314,9 +301,9 @@
           </select>
         </div>
         <div class="form-group">
-          <label id="lblBathrooms" for="bathrooms">បន្ទប់ទឹក</label>
+          <label id="lblBathrooms" for="bathrooms">បន្ទប់ទឹក (Bathrooms)</label>
           <select id="bathrooms">
-            <option value="Any" id="optBathAny">មិនកំណត់</option>
+            <option value="Any">Any</option>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -325,35 +312,66 @@
         </div>
       </div>
 
+      <!-- Direction & Parking Dropdowns -->
       <div class="row">
         <div class="form-group">
-          <label id="lblParking" for="parking">ចំណតរថយន្ត</label>
-          <select id="parking">
-            <option value="Not Specified" id="optParkAny">មិនកំណត់</option>
-            <option value="Car" id="optParkCar">រថយន្ត</option>
-            <option value="Moto" id="optParkMoto">ម៉ូតូ</option>
-            <option value="Both" id="optParkBoth">ទាំងពីរ</option>
+          <label id="lblDirection" for="direction">ទិស (Direction)</label>
+          <select id="direction">
+            <option value="Any">Any</option>
+            <option value="East">East (កើត)</option>
+            <option value="West">West (លិច)</option>
+            <option value="South">South (ត្បូង)</option>
+            <option value="North">North (ជើង)</option>
+            <option value="Northeast">Northeast (ឦសាន)</option>
+            <option value="Northwest">Northwest (ពាយព្យ)</option>
+            <option value="Southeast">Southeast (អាគ្នេយ៍)</option>
+            <option value="Southwest">Southwest (និរតី)</option>
           </select>
         </div>
+
         <div class="form-group">
-          <label id="lblDirection" for="direction">បែរមុខទៅ</label>
-          <select id="direction">
-            <option value="Any" id="optDirAny">មិនកំណត់</option>
-            <option value="North" id="optDirN">ជើង</option>
-            <option value="South" id="optDirS">ត្បូង</option>
-            <option value="East" id="optDirE">កើត</option>
-            <option value="West" id="optDirW">លិច</option>
-            <option value="Northeast" id="optDirNE">កើតឈៀងជើង</option>
-            <option value="Southeast" id="optDirSE">កើតឈៀងត្បូង</option>
-            <option value="Northwest" id="optDirNW">លិចឈៀងជើង</option>
-            <option value="Southwest" id="optDirSW">លិចឈៀងត្បូង</option>
+          <label id="lblParking" for="parking">កន្លែងចត (Parking)</label>
+          <select id="parking">
+            <option value="Any">Any</option>
+            <option value="Car">Car</option>
+            <option value="Moto only">Moto only</option>
+            <option value="Both">Both</option>
           </select>
+        </div>
+      </div>
+
+      <!-- Customer Contact Details -->
+      <div class="form-group">
+        <label id="lblFullName" for="fullName">ឈ្មោះអតិថិជន (Client Name) <span class="required">*</span></label>
+        <input type="text" id="fullName" placeholder="ឧទាហរណ៍៖ សុខ ជា" required>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label id="lblPhone1" for="phone1">លេខទូរស័ព្ទទី១ (Tel 1) <span class="required">*</span></label>
+          <input type="tel" id="phone1" placeholder="012 345 678" required>
+        </div>
+        <div class="form-group">
+          <label id="lblPhone2" for="phone2">លេខទូរស័ព្ទទី២ (Tel 2)</label>
+          <input type="tel" id="phone2" placeholder="098 765 432">
         </div>
       </div>
 
       <div class="form-group">
-        <label id="lblNotes" for="notes">ព័ត៌មានបន្ថែម</label>
-        <textarea id="notes" rows="3" placeholder="បញ្ជាក់ព័ត៌មានបន្ថែមប្រសិនជាមាន..."></textarea>
+        <label id="lblTg" for="telegramAccount">គណនី Telegram <span class="required">*</span></label>
+        <input type="text" id="telegramAccount" placeholder="@username ឬ លេខទូរស័ព្ទ" required>
+      </div>
+
+      <!-- Remarks -->
+      <div class="form-group">
+        <label id="lblNotes" for="notes">ព័ត៌មានបន្ថែម (Remark / Requirement)</label>
+        <textarea id="notes" rows="3" placeholder="បញ្ជាក់ព័ត៌មានបន្ថែម..."></textarea>
+      </div>
+
+      <!-- Submitter Name -->
+      <div class="form-group">
+        <label id="lblSubmittedBy" for="submittedBy">ឈ្មោះអ្នកប្រគល់ព័ត៌មាន (Submitted By) <span class="required">*</span></label>
+        <input type="text" id="submittedBy" placeholder="ឈ្មោះបុគ្គលិក ឬ ភ្នាក់ងារ" required>
       </div>
 
       <button type="submit" class="btn-submit" id="submitBtn">ផ្ញើព័ត៌មាន</button>
@@ -371,97 +389,83 @@
     const translations = {
       km: {
         title: '📋 ទម្រង់ព័ត៌មានអតិថិជនស្វែងរកអចលនទ្រព្យ',
-        subtitle: 'សូមបំពេញព័ត៌មានខាងក្រោម ដើម្បីឲ្យក្រុមការងារជួយស្វែងរកអចលនទ្រព្យជូនអ្នក',
-        fullName: 'ឈ្មោះអតិថិជន',
-        fullNamePlc: 'ឧទាហរណ៍៖ សុខ ជា',
-        phone: 'លេខទូរស័ព្ទទី១',
-        phone2: 'លេខទូរស័ព្ទទី២',
-        tg: 'គណនី Telegram',
-        tgPlc: '@username ឬ លេខទូរស័ព្ទ',
-        target: 'គោលបំណង',
+        subtitle: 'សូមបំពេញព័ត៌មានខាងក្រោម ដើម្បីឱ្យក្រុមការងារយើងខ្ញុំជួយស្វែងរកអចលនទ្រព្យដែលសមស្របបំផុត',
+        target: 'គោលបំណង (Target)',
         rent: 'ជួល',
         buy: 'ទិញ',
-        propType: 'ប្រភេទអចលនទ្រព្យ',
+        propType: 'ប្រភេទអចលនទ្រព្យ (Property Type)',
         typeDefault: '-- ជ្រើសរើស --',
-        typeHouse: 'ផ្ទះអាជីវកម្ម / ផ្ទះល្វែង',
+        typeHouse: 'ផ្ទះ / ផ្ទះល្វែង',
+        typeShophouse: 'ផ្ទះអាជីវកម្ម',
         typeVilla: 'វីឡា',
-        typeCondo: 'ខុនដូ / អាផាតមិន',
+        typeCondo: 'ខុនដូ',
+        typeApartment: 'អាផាតមិន',
         typeLand: 'ដី',
-        typeWarehouse: 'ឃ្លាំង / រោងចក្រ',
-        landSize: 'ទំហំដី',
-        buildingSize: 'ទំហំអគារ',
+        typeWarehouse: 'ឃ្លាំង',
+        typeFactory: 'រោងចក្រ',
+        minPrice: 'តម្លៃអប្បបរមា ($)',
+        maxPrice: 'តម្លៃអតិបរមា ($)',
         loc1: 'ទីតាំងទី១',
-        loc1Plc: 'ឧ. ទួលគោក',
+        loc1Plc: 'ខណ្ឌ ឬ តំបន់',
         loc2: 'ទីតាំងទី២',
-        loc2Plc: 'ឧ. បឹងកេងកង',
-        minPrice: 'ថវិកាអប្បបរមា ($)',
-        maxPrice: 'ថវិកាអតិបរមា ($)',
-        bedrooms: 'បន្ទប់គេង',
-        bathrooms: 'បន្ទប់ទឹក',
-        parking: 'ចំណតរថយន្ត',
-        direction: 'បែរមុខទៅ',
-        any: 'មិនកំណត់',
-        parkCar: 'រថយន្ត',
-        parkMoto: 'ម៉ូតូ',
-        parkBoth: 'ទាំងពីរ',
-        dirN: 'ជើង',
-        dirS: 'ត្បូង',
-        dirE: 'កើត',
-        dirW: 'លិច',
-        dirNE: 'កើតឈៀងជើង',
-        dirSE: 'កើតឈៀងត្បូង',
-        dirNW: 'លិចឈៀងជើង',
-        dirSW: 'លិចឈៀងត្បូង',
-        notes: 'ព័ត៌មានបន្ថែម',
-        notesPlc: 'បញ្ជាក់ព័ត៌មានបន្ថែមប្រសិនជាមាន...',
+        loc2Plc: 'ខណ្ឌ ឬ តំបន់',
+        buildingSize: 'ទំហំអគារ (Building Size)',
+        landSize: 'ទំហំដី (Land Size)',
+        bedrooms: 'បន្ទប់គេង (Bedrooms)',
+        bathrooms: 'បន្ទប់ទឹក (Bathrooms)',
+        direction: 'ទិស (Direction)',
+        parking: 'កន្លែងចត (Parking)',
+        fullName: 'ឈ្មោះអតិថិជន (Client Name)',
+        fullNamePlc: 'ឧទាហរណ៍៖ សុខ ជា',
+        phone1: 'លេខទូរស័ព្ទទី១ (Tel 1)',
+        phone2: 'លេខទូរស័ព្ទទី២ (Tel 2)',
+        tg: 'គណនី Telegram',
+        tgPlc: '@username ឬ លេខទូរស័ព្ទ',
+        notes: 'ព័ត៌មានបន្ថែម (Remark / Requirement)',
+        notesPlc: 'បញ្ជាក់ព័ត៌មានបន្ថែម...',
+        submittedBy: 'ឈ្មោះអ្នកប្រគល់ព័ត៌មាន (Submitted By)',
+        submittedByPlc: 'ឈ្មោះបុគ្គលិក ឬ ភ្នាក់ងារ',
         btnSubmit: 'ផ្ញើព័ត៌មាន',
         btnSending: 'កំពុងផ្ញើ...'
       },
       en: {
-        title: '📋 Property Client Inquiry Form',
-        subtitle: 'Please fill in the details below so our team can assist you with your search.',
-        fullName: 'Full Name',
-        fullNamePlc: 'e.g., Sok Chea',
-        phone: 'Primary Phone',
-        phone2: 'Secondary Phone',
-        tg: 'Telegram Account',
-        tgPlc: '@username or Phone Number',
-        target: 'Purpose',
+        title: '📋 Client Property Inquiry Form',
+        subtitle: 'Please fill in the form below so our team can help find the most suitable property for you.',
+        target: 'Target',
         rent: 'Rent',
         buy: 'Buy',
         propType: 'Property Type',
         typeDefault: '-- Select Type --',
-        typeHouse: 'House / Shophouse',
+        typeHouse: 'House / Flat House',
+        typeShophouse: 'Shophouse',
         typeVilla: 'Villa',
-        typeCondo: 'Condo / Apartment',
+        typeCondo: 'Condo',
+        typeApartment: 'Apartment',
         typeLand: 'Land',
-        typeWarehouse: 'Warehouse / Factory',
-        landSize: 'Land Size',
-        buildingSize: 'Building Size',
+        typeWarehouse: 'Warehouse',
+        typeFactory: 'Factory',
+        minPrice: 'Min Price ($)',
+        maxPrice: 'Max Price ($)',
         loc1: 'Location 1',
-        loc1Plc: 'e.g., Toul Kork',
+        loc1Plc: 'District or Area',
         loc2: 'Location 2',
-        loc2Plc: 'e.g., BKK',
-        minPrice: 'Min Budget ($)',
-        maxPrice: 'Max Budget ($)',
+        loc2Plc: 'District or Area',
+        buildingSize: 'Building Size',
+        landSize: 'Land Size',
         bedrooms: 'Bedrooms',
         bathrooms: 'Bathrooms',
-        parking: 'Parking',
         direction: 'Direction',
-        any: 'Any',
-        parkCar: 'Car',
-        parkMoto: 'Motorcycle',
-        parkBoth: 'Both',
-        dirN: 'North',
-        dirS: 'South',
-        dirE: 'East',
-        dirW: 'West',
-        dirNE: 'Northeast',
-        dirSE: 'Southeast',
-        dirNW: 'Northwest',
-        dirSW: 'Southwest',
-        notes: 'Additional Notes',
-        notesPlc: 'Any extra details or preferences...',
+        parking: 'Parking',
+        fullName: 'Client Name',
+        fullNamePlc: 'e.g., Sok Chea',
+        phone1: 'Tel 1',
+        phone2: 'Tel 2',
+        tg: 'Telegram Account',
+        tgPlc: '@username or Phone Number',
+        notes: 'Remark / Requirement',
+        notesPlc: 'Additional requirement details...',
+        submittedBy: 'Submitted By',
+        submittedByPlc: 'Staff or Agent name',
         btnSubmit: 'Submit Inquiry',
         btnSending: 'Sending...'
       }
@@ -475,15 +479,6 @@
 
       document.getElementById('titleText').innerText = t.title;
       document.getElementById('subtitleText').innerText = t.subtitle;
-      
-      document.getElementById('lblFullName').childNodes[0].nodeValue = t.fullName + " ";
-      document.getElementById('fullName').placeholder = t.fullNamePlc;
-
-      document.getElementById('lblPhone').childNodes[0].nodeValue = t.phone + " ";
-      document.getElementById('lblPhone2').innerText = t.phone2;
-      document.getElementById('lblTg').childNodes[0].nodeValue = t.tg + " ";
-      document.getElementById('telegramAccount').placeholder = t.tgPlc;
-
       document.getElementById('lblTarget').childNodes[0].nodeValue = t.target + " ";
       document.getElementById('lblRent').innerText = t.rent;
       document.getElementById('lblBuy').innerText = t.buy;
@@ -491,77 +486,59 @@
       document.getElementById('lblPropType').childNodes[0].nodeValue = t.propType + " ";
       document.getElementById('optTypeDefault').innerText = t.typeDefault;
       document.getElementById('optTypeHouse').innerText = t.typeHouse;
+      document.getElementById('optTypeShophouse').innerText = t.typeShophouse;
       document.getElementById('optTypeVilla').innerText = t.typeVilla;
       document.getElementById('optTypeCondo').innerText = t.typeCondo;
+      document.getElementById('optTypeApartment').innerText = t.typeApartment;
       document.getElementById('optTypeLand').innerText = t.typeLand;
       document.getElementById('optTypeWarehouse').innerText = t.typeWarehouse;
+      document.getElementById('optTypeFactory').innerText = t.typeFactory;
 
-      document.getElementById('lblLandSize').innerText = t.landSize;
-      document.getElementById('lblBuildingSize').innerText = t.buildingSize;
+      document.getElementById('lblMinPrice').innerText = t.minPrice;
+      document.getElementById('lblMaxPrice').childNodes[0].nodeValue = t.maxPrice + " ";
 
       document.getElementById('lblLoc1').childNodes[0].nodeValue = t.loc1 + " ";
-      document.getElementById('location').placeholder = t.loc1Plc;
+      document.getElementById('location1').placeholder = t.loc1Plc;
       document.getElementById('lblLoc2').innerText = t.loc2;
       document.getElementById('location2').placeholder = t.loc2Plc;
 
-      document.getElementById('lblMinPrice').innerText = t.minPrice;
-      document.getElementById('lblMaxPrice').innerText = t.maxPrice;
+      document.getElementById('lblBuildingSize').innerText = t.buildingSize;
+      document.getElementById('lblLandSize').innerText = t.landSize;
 
       document.getElementById('lblBedrooms').innerText = t.bedrooms;
-      document.getElementById('optBedAny').innerText = t.any;
-
       document.getElementById('lblBathrooms').innerText = t.bathrooms;
-      document.getElementById('optBathAny').innerText = t.any;
-
-      document.getElementById('lblParking').innerText = t.parking;
-      document.getElementById('optParkAny').innerText = t.any;
-      document.getElementById('optParkCar').innerText = t.parkCar;
-      document.getElementById('optParkMoto').innerText = t.parkMoto;
-      document.getElementById('optParkBoth').innerText = t.parkBoth;
-
       document.getElementById('lblDirection').innerText = t.direction;
-      document.getElementById('optDirAny').innerText = t.any;
-      document.getElementById('optDirN').innerText = t.dirN;
-      document.getElementById('optDirS').innerText = t.dirS;
-      document.getElementById('optDirE').innerText = t.dirE;
-      document.getElementById('optDirW').innerText = t.dirW;
-      document.getElementById('optDirNE').innerText = t.dirNE;
-      document.getElementById('optDirSE').innerText = t.dirSE;
-      document.getElementById('optDirNW').innerText = t.dirNW;
-      document.getElementById('optDirSW').innerText = t.dirSW;
+      document.getElementById('lblParking').innerText = t.parking;
+
+      document.getElementById('lblFullName').childNodes[0].nodeValue = t.fullName + " ";
+      document.getElementById('fullName').placeholder = t.fullNamePlc;
+
+      document.getElementById('lblPhone1').childNodes[0].nodeValue = t.phone1 + " ";
+      document.getElementById('lblPhone2').innerText = t.phone2;
+      document.getElementById('lblTg').childNodes[0].nodeValue = t.tg + " ";
+      document.getElementById('telegramAccount').placeholder = t.tgPlc;
 
       document.getElementById('lblNotes').innerText = t.notes;
       document.getElementById('notes').placeholder = t.notesPlc;
 
+      document.getElementById('lblSubmittedBy').childNodes[0].nodeValue = t.submittedBy + " ";
+      document.getElementById('submittedBy').placeholder = t.submittedByPlc;
+
       document.getElementById('submitBtn').innerText = t.btnSubmit;
     }
 
-    document.querySelectorAll('input[name="lang"]').forEach(radio => {
-      radio.addEventListener('change', (e) => {
-        setLanguage(e.target.value);
-      });
+    document.getElementById('propertyType').addEventListener('change', (e) => {
+      const isLand = e.target.value === 'Land';
+      const bedBathRow = document.getElementById('bedBathRow');
+      if (isLand) {
+        bedBathRow.classList.add('hidden');
+      } else {
+        bedBathRow.classList.remove('hidden');
+      }
     });
 
-    const propertyTypeSelect = document.getElementById('propertyType');
-    const sizeRow = document.getElementById('sizeRow');
-    const landSizeGroup = document.getElementById('landSizeGroup');
-    const buildingSizeGroup = document.getElementById('buildingSizeGroup');
-
-    propertyTypeSelect.addEventListener('change', (e) => {
-      const val = e.target.value;
-      if (val === 'Land') {
-        sizeRow.classList.remove('hidden');
-        landSizeGroup.classList.remove('hidden');
-        buildingSizeGroup.classList.add('hidden');
-      } else if (val === 'Warehouse' || val === 'House' || val === 'Villa') {
-        sizeRow.classList.remove('hidden');
-        landSizeGroup.classList.remove('hidden');
-        buildingSizeGroup.classList.remove('hidden');
-      } else {
-        sizeRow.classList.add('hidden');
-        landSizeGroup.classList.add('hidden');
-        buildingSizeGroup.classList.add('hidden');
-      }
+    document.querySelectorAll('input[name="lang"]').forEach(radio => {
+      radio.addEventListener('change', (e) => setLanguage(e.target.value));
     });
 
     const form = document.getElementById('inquiryForm');
@@ -572,29 +549,33 @@
       submitBtn.disabled = true;
       submitBtn.innerText = translations[currentLang].btnSending;
 
+      const loc1 = document.getElementById('location1').value.trim();
+      const loc2 = document.getElementById('location2').value.trim();
+      const combinedLocation = loc2 ? `${loc1}, ${loc2}` : loc1;
+
       const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
       const now = new Date();
       const formattedDate = now.toLocaleString('en-GB', { timeZone: 'Asia/Phnom_Penh' });
 
       const payload = {
         lang: currentLang,
-        fullName: document.getElementById('fullName').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        phone2: document.getElementById('phone2').value.trim(),
-        telegramAccount: document.getElementById('telegramAccount').value.trim(),
         target: document.querySelector('input[name="target"]:checked').value,
-        propertyType: propertyTypeSelect.value,
-        landSize: document.getElementById('landSize').value.trim(),
-        buildingSize: document.getElementById('buildingSize').value.trim(),
-        location: document.getElementById('location').value.trim(),
-        location2: document.getElementById('location2').value.trim(),
+        propertyType: document.getElementById('propertyType').value,
         minPrice: document.getElementById('minPrice').value || '0',
         maxPrice: document.getElementById('maxPrice').value || '0',
+        location: combinedLocation,
+        buildingSize: document.getElementById('buildingSize').value.trim(),
+        landSize: document.getElementById('landSize').value.trim(),
         bedrooms: document.getElementById('bedrooms').value,
         bathrooms: document.getElementById('bathrooms').value,
-        parking: document.getElementById('parking').value,
         direction: document.getElementById('direction').value,
+        parking: document.getElementById('parking').value,
+        fullName: document.getElementById('fullName').value.trim(),
+        phone1: document.getElementById('phone1').value.trim(),
+        phone2: document.getElementById('phone2').value.trim(),
+        telegramAccount: document.getElementById('telegramAccount').value.trim(),
         notes: document.getElementById('notes').value.trim(),
+        submittedBy: document.getElementById('submittedBy').value.trim(),
         submittedAt: formattedDate,
         chat_id: user ? user.id : null,
         tgUserId: user ? user.id : null,
@@ -604,7 +585,7 @@
       };
 
       try {
-        const res = await fetch('/submit-form', {
+        const res = await fetch('/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -614,7 +595,7 @@
           if (tg) {
             tg.close();
           } else {
-            alert(currentLang === 'km' ? 'ព័ត៌មានត្រូវបានផ្ញើដោយជោគជ័យ! សូមអរគុណ' : 'Inquiry submitted successfully!');
+            alert(currentLang === 'km' ? 'ព័ត៌មានត្រូវបានផ្ញើដោយជោគជ័យ!' : 'Inquiry submitted successfully!');
             form.reset();
           }
         } else {
