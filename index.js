@@ -28,19 +28,8 @@ function escapeHtml(text) {
     .replace(/"/g, '&quot;');
 }
 
-// Serve Client Inquiry Form (index.html)
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-// Serve Property Listing Form (listing.html)
-app.get('/listing', (req, res) => {
-  res.sendFile(path.join(__dirname, 'listing.html'));
-});
-
-// Telegram /start Command with dual Mini App options
-bot.onText(/\/start/, (msg) => {
-  const chatId = msg.chat.id;
+// Function to send form selection menu
+function sendFormMenu(chatId) {
   bot.sendMessage(
     chatId, 
     "25Realty សូមស្វាគមន៍ 🙏\nសូមជ្រើសរើសទម្រង់ដែលអ្នកចង់បំពេញខាងក្រោម៖", 
@@ -53,6 +42,22 @@ bot.onText(/\/start/, (msg) => {
       }
     }
   );
+}
+
+// Serve Client Inquiry Form (index.html)
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Serve Property Listing Form (listing.html)
+app.get('/listing', (req, res) => {
+  res.sendFile(path.join(__dirname, 'listing.html'));
+});
+
+// Handle /start command and any text/menu interaction
+bot.on('message', (msg) => {
+  // Always trigger the selection menu when user interacts with the bot
+  sendFormMenu(msg.chat.id);
 });
 
 // Endpoint for Client Inquiry Submissions
