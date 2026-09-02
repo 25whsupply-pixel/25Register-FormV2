@@ -12,6 +12,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ==========================================
 const SCRIPT_URL = process.env.SCRIPT_URL || process.env.WEB_APP_URL;
 const BOT_TOKEN = process.env.BOT_TOKEN;
+const WEB_APP_URL = process.env.WEB_APP_URL || 'https://two5register-formv2-8kmz.onrender.com';
 
 // ==========================================
 // PAGE ROUTES
@@ -47,7 +48,7 @@ async function forwardToAppsScript(payload) {
 }
 
 // ==========================================
-// TELEGRAM WEBHOOK HANDLER (/start COMMAND)
+// TELEGRAM WEBHOOK HANDLER (/start WITH BUTTONS)
 // ==========================================
 app.post('/telegram-webhook', async (req, res) => {
   try {
@@ -58,7 +59,7 @@ app.post('/telegram-webhook', async (req, res) => {
       const text = update.message.text.trim();
 
       if (text.startsWith('/start')) {
-        const welcomeMessage = `👋 <b>Welcome to 25Realty Bot!</b>\n\nPlease use the link below to submit inquiries or property listings.`;
+        const welcomeMessage = `👋 <b>Welcome to 25Realty Bot!</b>\n\nPlease tap one of the options below to open the form:`;
 
         if (BOT_TOKEN) {
           await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -67,7 +68,23 @@ app.post('/telegram-webhook', async (req, res) => {
             body: JSON.stringify({
               chat_id: chatId,
               text: welcomeMessage,
-              parse_mode: 'HTML'
+              parse_mode: 'HTML',
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    {
+                      text: "📋 Submit Client Inquiry",
+                      web_app: { url: WEB_APP_URL }
+                    }
+                  ],
+                  [
+                    {
+                      text: "🏠 Submit Property Listing",
+                      web_app: { url: `${WEB_APP_URL}/listing` }
+                    }
+                  ]
+                ]
+              }
             })
           });
         }
@@ -77,7 +94,7 @@ app.post('/telegram-webhook', async (req, res) => {
     return res.status(200).send('OK');
   } catch (err) {
     console.error('Webhook processing error:', err);
-    return res.status(200).send('OK'); // Always return 200 to Telegram
+    return res.status(200).send('OK');
   }
 });
 
