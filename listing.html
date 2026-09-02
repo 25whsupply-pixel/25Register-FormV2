@@ -177,6 +177,14 @@
       display: none !important;
     }
 
+    .notice-text {
+      color: #ef4444;
+      font-style: italic;
+      font-size: 0.78rem;
+      margin-top: 6px;
+      line-height: 1.35;
+    }
+
     button.btn-submit {
       width: 100%;
       padding: 14px;
@@ -224,9 +232,8 @@
 
     <form id="listingForm">
 
-      <!-- Role Selector -->
       <div class="form-group">
-        <label id="lblRole">តួនាទីរបស់អ្នក <span class="required">*</span></label>
+        <label id="lblRole">តួនាទីរបស់អ្នក (User Role) <span class="required">*</span></label>
         <div class="segmented-control">
           <input type="radio" id="roleOwner" name="userRole" value="Owner" checked>
           <label id="lblOwner" for="roleOwner">ម្ចាស់ផ្ទាល់</label>
@@ -239,29 +246,18 @@
         </div>
       </div>
 
-      <!-- Conditional Role Info -->
-      <div class="form-group hidden" id="agencyGroup">
-        <label id="lblAgency" for="agencyName">ឈ្មោះក្រុមហ៊ុន / ភ្នាក់ងារ</label>
-        <input type="text" id="agencyName" placeholder="ឧ. Real Estate Agency Co.">
-      </div>
-
-      <div class="form-group hidden" id="staffGroup">
-        <label id="lblStaffId" for="staffId">អត្តលេខបុគ្គលិក (Staff ID)</label>
-        <input type="text" id="staffId" placeholder="ឧ. 25R-08">
-      </div>
-
       <div class="form-group">
-        <label id="lblFullName" for="fullName">ឈ្មោះអ្នកប្រគល់ព័ត៌មាន <span class="required">*</span></label>
+        <label id="lblFullName" for="fullName">ឈ្មោះអ្នកប្រគល់ព័ត៌មាន (Submitted by) <span class="required">*</span></label>
         <input type="text" id="fullName" placeholder="ឧទាហរណ៍៖ សុខ ជា" required>
       </div>
 
       <div class="row">
         <div class="form-group">
-          <label id="lblPhone" for="phone">លេខទូរស័ព្ទទី១ <span class="required">*</span></label>
+          <label id="lblPhone" for="phone">លេខទូរស័ព្ទទី១ (Tel 1) <span class="required">*</span></label>
           <input type="tel" id="phone" placeholder="012 345 678" required>
         </div>
         <div class="form-group">
-          <label id="lblPhone2" for="phone2">លេខទូរស័ព្ទទី២</label>
+          <label id="lblPhone2" for="phone2">លេខទូរស័ព្ទទី២ (Tel 2)</label>
           <input type="tel" id="phone2" placeholder="098 765 432">
         </div>
       </div>
@@ -271,9 +267,20 @@
         <input type="text" id="telegramAccount" placeholder="@username ឬ លេខទូរស័ព្ទ" required>
       </div>
 
-      <!-- Updated Listing Type Options -->
       <div class="form-group">
-        <label id="lblListingType">ប្រភេទនៃការដាក់លក់/ជួល <span class="required">*</span></label>
+        <label id="lblPropType" for="propertyType">ប្រភេទអចលនទ្រព្យ (Property Type) <span class="required">*</span></label>
+        <select id="propertyType" required>
+          <option value="" id="optTypeDefault">-- ជ្រើសរើស --</option>
+          <option value="House" id="optTypeHouse">ផ្ទះអាជីវកម្ម / ផ្ទះល្វែង</option>
+          <option value="Villa" id="optTypeVilla">វីឡា</option>
+          <option value="Condo" id="optTypeCondo">ខុនដូ / អាផាតមិន</option>
+          <option value="Land" id="optTypeLand">ដី</option>
+          <option value="Warehouse" id="optTypeWarehouse">ឃ្លាំង / រោងចក្រ</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label id="lblListingType">ប្រភេទនៃការដាក់លក់/ជួល (Listing Type) <span class="required">*</span></label>
         <div class="segmented-control">
           <input type="radio" id="typeRent" name="listingType" value="Rent">
           <label id="lblRent" for="typeRent">ជួល</label>
@@ -284,18 +291,6 @@
           <input type="radio" id="typeSaleRent" name="listingType" value="Sale & Rent" checked>
           <label id="lblSaleRent" for="typeSaleRent">លក់ និង ជួល</label>
         </div>
-      </div>
-
-      <div class="form-group">
-        <label id="lblPropType" for="propertyType">ប្រភេទអចលនទ្រព្យ <span class="required">*</span></label>
-        <select id="propertyType" required>
-          <option value="" id="optTypeDefault">-- ជ្រើសរើស --</option>
-          <option value="House" id="optTypeHouse">ផ្ទះអាជីវកម្ម / ផ្ទះល្វែង</option>
-          <option value="Villa" id="optTypeVilla">វីឡា</option>
-          <option value="Condo" id="optTypeCondo">ខុនដូ / អាផាតមិន</option>
-          <option value="Land" id="optTypeLand">ដី</option>
-          <option value="Warehouse" id="optTypeWarehouse">ឃ្លាំង / រោងចក្រ</option>
-        </select>
       </div>
 
       <div class="row">
@@ -309,29 +304,28 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="form-group">
-          <label id="lblLoc1" for="location">ទីតាំង (ខណ្ឌ/ស្រុក) <span class="required">*</span></label>
-          <input type="text" id="location" placeholder="ឧ. ទួលគោក" required>
-        </div>
-        <div class="form-group">
-          <label id="lblMapLink" for="mapLink">តំណភ្ជាប់ Google Map</label>
-          <input type="url" id="mapLink" placeholder="https://maps.google.com/...">
-        </div>
+      <div class="form-group">
+        <label id="lblLoc1" for="location">ទីតាំង (Location) <span class="required">*</span></label>
+        <input type="text" id="location" placeholder="ឧ. ទួលគោក" required>
       </div>
 
-      <div class="row" id="sizeRow">
+      <div class="form-group">
+        <label id="lblMapLink" for="mapLink">តំណភ្ជាប់ Google Map <span class="required">*</span></label>
+        <input type="url" id="mapLink" placeholder="https://maps.google.com/..." required>
+      </div>
+
+      <div class="row">
         <div class="form-group" id="landSizeGroup">
-          <label id="lblLandSize" for="landSize">ទំហំដី</label>
+          <label id="lblLandSize" for="landSize">ទំហំដី (Land Size)</label>
           <input type="text" id="landSize" placeholder="ឧ. 10m x 20m">
         </div>
         <div class="form-group" id="buildingSizeGroup">
-          <label id="lblBuildingSize" for="buildingSize">ទំហំអគារ</label>
+          <label id="lblBuildingSize" for="buildingSize">ទំហំអគារ (Building Size)</label>
           <input type="text" id="buildingSize" placeholder="ឧ. 8m x 15m">
         </div>
       </div>
 
-      <div class="row">
+      <div class="row" id="bedBathRow">
         <div class="form-group">
           <label id="lblBedrooms" for="bedrooms">បន្ទប់គេង</label>
           <select id="bedrooms">
@@ -354,29 +348,26 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="form-group">
-          <label id="lblCommission" for="commission">កម្រៃជើងសារ (%)</label>
-          <input type="text" id="commission" placeholder="ឧ. 3% ឬ 1 ខែ">
-        </div>
-        <div class="form-group">
-          <label id="lblDirection" for="direction">បែរមុខទៅ</label>
-          <select id="direction">
-            <option value="Any" id="optDirAny">មិនកំណត់</option>
-            <option value="North" id="optDirN">ជើង</option>
-            <option value="South" id="optDirS">ត្បូង</option>
-            <option value="East" id="optDirE">កើត</option>
-            <option value="West" id="optDirW">លិច</option>
-            <option value="Northeast" id="optDirNE">កើតឈៀងជើង</option>
-            <option value="Southeast" id="optDirSE">កើតឈៀងត្បូង</option>
-            <option value="Northwest" id="optDirNW">លិចឈៀងជើង</option>
-            <option value="Southwest" id="optDirSW">លិចឈៀងត្បូង</option>
-          </select>
-        </div>
+      <div class="form-group">
+        <label id="lblParking" for="parking">កន្លែងចតរថយន្ត / ម៉ូតូ (Parking)</label>
+        <select id="parking">
+          <option value="Not Available">Not Available</option>
+          <option value="Car">Car</option>
+          <option value="Moto only">Moto only</option>
+          <option value="Both" selected>Both</option>
+        </select>
       </div>
 
       <div class="form-group">
-        <label id="lblNotes" for="notes">ព័ត៌មានបន្ថែមពីអចលនទ្រព្យ</label>
+        <label id="lblCommission" for="commission">កម្រៃជើងសារ (Commission Agree) <span class="required">*</span></label>
+        <select id="commission" required></select>
+        <p class="notice-text" id="commNotice">
+          * ការជ្រើសរើស និងផ្ញើទម្រង់នេះ មានន័យថាអ្នកបានយល់ព្រមលើលក្ខខណ្ឌកម្រៃជើងសារដែលបានជ្រើសរើសខាងលើ។
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label id="lblNotes" for="notes">ព័ត៌មានបន្ថែម (Remark / Description)</label>
         <textarea id="notes" rows="3" placeholder="បញ្ជាក់ព័ត៌មានបន្ថែម..."></textarea>
       </div>
 
@@ -396,23 +387,21 @@
       km: {
         title: '🏠 ទម្រង់ចុះបញ្ជីអចលនទ្រព្យ',
         subtitle: 'សូមបំពេញព័ត៌មានខាងក្រោម ដើម្បីដាក់លក់ ឬជួលអចលនទ្រព្យរបស់អ្នក',
-        lblRole: 'តួនាទីរបស់អ្នក',
+        lblRole: 'តួនាទីរបស់អ្នក (User Role)',
         owner: 'ម្ចាស់ផ្ទាល់',
         agent: 'ភ្នាក់ងារ',
         staff: 'បុគ្គលិក',
-        agency: 'ឈ្មោះក្រុមហ៊ុន / ភ្នាក់ងារ',
-        staffId: 'អត្តលេខបុគ្គលិក (Staff ID)',
-        fullName: 'ឈ្មោះអ្នកប្រគល់ព័ត៌មាន',
+        fullName: 'ឈ្មោះអ្នកប្រគល់ព័ត៌មាន (Submitted by)',
         fullNamePlc: 'ឧទាហរណ៍៖ សុខ ជា',
-        phone: 'លេខទូរស័ព្ទទី១',
-        phone2: 'លេខទូរស័ព្ទទី២',
+        phone: 'លេខទូរស័ព្ទទី១ (Tel 1)',
+        phone2: 'លេខទូរស័ព្ទទី២ (Tel 2)',
         tg: 'គណនី Telegram',
         tgPlc: '@username ឬ លេខទូរស័ព្ទ',
-        listingType: 'ប្រភេទនៃការដាក់លក់/ជួល',
+        listingType: 'ប្រភេទនៃការដាក់លក់/ជួល (Listing Type)',
         rent: 'ជួល',
         sale: 'លក់',
         saleRent: 'លក់ និង ជួល',
-        propType: 'ប្រភេទអចលនទ្រព្យ',
+        propType: 'ប្រភេទអចលនទ្រព្យ (Property Type)',
         typeDefault: '-- ជ្រើសរើស --',
         typeHouse: 'ផ្ទះអាជីវកម្ម / ផ្ទះល្វែង',
         typeVilla: 'វីឡា',
@@ -421,19 +410,17 @@
         typeWarehouse: 'ឃ្លាំង / រោងចក្រ',
         rentPrice: 'តម្លៃជួល ($/ខែ)',
         salePrice: 'តម្លៃលក់ ($)',
-        loc1: 'ទីតាំង (ខណ្ឌ/ស្រុក)',
+        loc1: 'ទីតាំង (Location)',
         loc1Plc: 'ឧ. ទួលគោក',
         mapLink: 'តំណភ្ជាប់ Google Map',
-        landSize: 'ទំហំដី',
-        buildingSize: 'ទំហំអគារ',
+        landSize: 'ទំហំដី (Land Size)',
+        buildingSize: 'ទំហំអគារ (Building Size)',
         bedrooms: 'បន្ទប់គេង',
         bathrooms: 'បន្ទប់ទឹក',
-        commission: 'កម្រៃជើងសារ (%)',
-        direction: 'បែរមុខទៅ',
-        any: 'មិនកំណត់',
-        dirN: 'ជើង', dirS: 'ត្បូង', dirE: 'កើត', dirW: 'លិច',
-        dirNE: 'កើតឈៀងជើង', dirSE: 'កើតឈៀងត្បូង', dirNW: 'លិចឈៀងជើង', dirSW: 'លិចឈៀងត្បូង',
-        notes: 'ព័ត៌មានបន្ថែមពីអចលនទ្រព្យ',
+        parking: 'កន្លែងចតរថយន្ត / ម៉ូតូ (Parking)',
+        commission: 'កម្រៃជើងសារ (Commission Agree)',
+        commNotice: '* ការជ្រើសរើស និងផ្ញើទម្រង់នេះ មានន័យថាអ្នកបានយល់ព្រមលើលក្ខខណ្ឌកម្រៃជើងសារដែលបានជ្រើសរើសខាងលើ។',
+        notes: 'ព័ត៌មានបន្ថែម (Remark / Description)',
         notesPlc: 'បញ្ជាក់ព័ត៌មានបន្ថែម...',
         btnSubmit: 'ផ្ញើព័ត៌មានអចលនទ្រព្យ',
         btnSending: 'កំពុងផ្ញើ...'
@@ -441,16 +428,14 @@
       en: {
         title: '🏠 Property Listing Form',
         subtitle: 'Please fill in the details below to list your property for rent or sale.',
-        lblRole: 'Your Role',
+        lblRole: 'User Role',
         owner: 'Owner',
         agent: 'Agent',
-        staff: '25R Staff',
-        agency: 'Agency / Company Name',
-        staffId: 'Staff ID',
-        fullName: 'Submitter Name',
+        staff: 'Staff',
+        fullName: 'Submitted by',
         fullNamePlc: 'e.g., Sok Chea',
-        phone: 'Primary Phone',
-        phone2: 'Secondary Phone',
+        phone: 'Tel 1',
+        phone2: 'Tel 2',
         tg: 'Telegram Account',
         tgPlc: '@username or Phone Number',
         listingType: 'Listing Type',
@@ -466,19 +451,17 @@
         typeWarehouse: 'Warehouse / Factory',
         rentPrice: 'Rental Price ($/mo)',
         salePrice: 'Sale Price ($)',
-        loc1: 'Location / District',
+        loc1: 'Location',
         loc1Plc: 'e.g., Toul Kork',
         mapLink: 'Google Map Link',
         landSize: 'Land Size',
         buildingSize: 'Building Size',
         bedrooms: 'Bedrooms',
         bathrooms: 'Bathrooms',
-        commission: 'Commission Rate',
-        direction: 'Direction',
-        any: 'Any',
-        dirN: 'North', dirS: 'South', dirE: 'East', dirW: 'West',
-        dirNE: 'Northeast', dirSE: 'Southeast', dirNW: 'Northwest', dirSW: 'Southwest',
-        notes: 'Property Description / Notes',
+        parking: 'Parking',
+        commission: 'Commission Agree',
+        commNotice: '* By selecting and submitting this form, you agree to the selected commission terms above.',
+        notes: 'Remark / Description',
         notesPlc: 'Additional details or features...',
         btnSubmit: 'Submit Property Listing',
         btnSending: 'Sending...'
@@ -497,9 +480,6 @@
       document.getElementById('lblOwner').innerText = t.owner;
       document.getElementById('lblAgent').innerText = t.agent;
       document.getElementById('lblStaff').innerText = t.staff;
-
-      document.getElementById('lblAgency').innerText = t.agency;
-      document.getElementById('lblStaffId').innerText = t.staffId;
 
       document.getElementById('lblFullName').childNodes[0].nodeValue = t.fullName + " ";
       document.getElementById('fullName').placeholder = t.fullNamePlc;
@@ -527,25 +507,17 @@
 
       document.getElementById('lblLoc1').childNodes[0].nodeValue = t.loc1 + " ";
       document.getElementById('location').placeholder = t.loc1Plc;
-      document.getElementById('lblMapLink').innerText = t.mapLink;
+      document.getElementById('lblMapLink').childNodes[0].nodeValue = t.mapLink + " ";
 
       document.getElementById('lblLandSize').innerText = t.landSize;
       document.getElementById('lblBuildingSize').innerText = t.buildingSize;
 
       document.getElementById('lblBedrooms').innerText = t.bedrooms;
       document.getElementById('lblBathrooms').innerText = t.bathrooms;
-      document.getElementById('lblCommission').innerText = t.commission;
+      document.getElementById('lblParking').innerText = t.parking;
 
-      document.getElementById('lblDirection').innerText = t.direction;
-      document.getElementById('optDirAny').innerText = t.any;
-      document.getElementById('optDirN').innerText = t.dirN;
-      document.getElementById('optDirS').innerText = t.dirS;
-      document.getElementById('optDirE').innerText = t.dirE;
-      document.getElementById('optDirW').innerText = t.dirW;
-      document.getElementById('optDirNE').innerText = t.dirNE;
-      document.getElementById('optDirSE').innerText = t.dirSE;
-      document.getElementById('optDirNW').innerText = t.dirNW;
-      document.getElementById('optDirSW').innerText = t.dirSW;
+      document.getElementById('lblCommission').childNodes[0].nodeValue = t.commission + " ";
+      document.getElementById('commNotice').innerText = t.commNotice;
 
       document.getElementById('lblNotes').innerText = t.notes;
       document.getElementById('notes').placeholder = t.notesPlc;
@@ -553,27 +525,40 @@
       document.getElementById('submitBtn').innerText = t.btnSubmit;
     }
 
-    // Role dynamic toggle
-    document.querySelectorAll('input[name="userRole"]').forEach(radio => {
-      radio.addEventListener('change', (e) => {
-        const role = e.target.value;
-        if (role === 'Agent') {
-          document.getElementById('agencyGroup').classList.remove('hidden');
-          document.getElementById('staffGroup').classList.add('hidden');
-        } else if (role === 'Staff') {
-          document.getElementById('staffGroup').classList.remove('hidden');
-          document.getElementById('agencyGroup').classList.add('hidden');
-        } else {
-          document.getElementById('agencyGroup').classList.add('hidden');
-          document.getElementById('staffGroup').classList.add('hidden');
-        }
-      });
+    // Dynamic Commission Options based on Listing Type
+    function updateCommissionOptions(type) {
+      const commSelect = document.getElementById('commission');
+      commSelect.innerHTML = '';
+
+      if (type === 'Sale') {
+        commSelect.options.add(new Option('3%', '3%'));
+        commSelect.options.add(new Option('Asking for negotiated', 'Asking for negotiated'));
+      } else if (type === 'Rent') {
+        commSelect.options.add(new Option('100%', '100%'));
+        commSelect.options.add(new Option('Asking for negotiated', 'Asking for negotiated'));
+      } else { // Sale & Rent
+        commSelect.options.add(new Option('3% (Sale) / 100% (Rent)', '3% (Sale) / 100% (Rent)'));
+        commSelect.options.add(new Option('Asking for negotiated', 'Asking for negotiated'));
+      }
+    }
+
+    // Hide Bedrooms & Bathrooms when Land is selected
+    document.getElementById('propertyType').addEventListener('change', (e) => {
+      const isLand = e.target.value === 'Land';
+      const bedBathRow = document.getElementById('bedBathRow');
+      if (isLand) {
+        bedBathRow.classList.add('hidden');
+      } else {
+        bedBathRow.classList.remove('hidden');
+      }
     });
 
-    // Listing Type dynamic price view
+    // Dynamic price view & commission update on Listing Type change
     document.querySelectorAll('input[name="listingType"]').forEach(radio => {
       radio.addEventListener('change', (e) => {
         const type = e.target.value;
+        updateCommissionOptions(type);
+
         if (type === 'Rent') {
           document.getElementById('rentPriceGroup').classList.remove('hidden');
           document.getElementById('salePriceGroup').classList.add('hidden');
@@ -586,6 +571,9 @@
         }
       });
     });
+
+    // Initialize commission options on start
+    updateCommissionOptions('Sale & Rent');
 
     document.querySelectorAll('input[name="lang"]').forEach(radio => {
       radio.addEventListener('change', (e) => setLanguage(e.target.value));
@@ -606,14 +594,12 @@
       const payload = {
         lang: currentLang,
         userRole: document.querySelector('input[name="userRole"]:checked').value,
-        agencyName: document.getElementById('agencyName').value.trim(),
-        staffId: document.getElementById('staffId').value.trim(),
         fullName: document.getElementById('fullName').value.trim(),
         phone: document.getElementById('phone').value.trim(),
         phone2: document.getElementById('phone2').value.trim(),
         telegramAccount: document.getElementById('telegramAccount').value.trim(),
-        listingType: document.querySelector('input[name="listingType"]:checked').value,
         propertyType: document.getElementById('propertyType').value,
+        listingType: document.querySelector('input[name="listingType"]:checked').value,
         rentPrice: document.getElementById('rentPrice').value || '0',
         salePrice: document.getElementById('salePrice').value || '0',
         location: document.getElementById('location').value.trim(),
@@ -622,8 +608,8 @@
         buildingSize: document.getElementById('buildingSize').value.trim(),
         bedrooms: document.getElementById('bedrooms').value,
         bathrooms: document.getElementById('bathrooms').value,
-        commission: document.getElementById('commission').value.trim(),
-        direction: document.getElementById('direction').value,
+        parking: document.getElementById('parking').value,
+        commission: document.getElementById('commission').value,
         notes: document.getElementById('notes').value.trim(),
         submittedAt: formattedDate,
         chat_id: user ? user.id : null,
@@ -646,6 +632,7 @@
           } else {
             alert(currentLang === 'km' ? 'អចលនទ្រព្យត្រូវបានចុះបញ្ជីដោយជោគជ័យ!' : 'Property listed successfully!');
             form.reset();
+            updateCommissionOptions('Sale & Rent');
           }
         } else {
           alert(currentLang === 'km' ? 'មានបញ្ហាក្នុងការផ្ញើ សូមព្យាយាមម្តងទៀត' : 'Error submitting form, please try again.');
