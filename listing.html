@@ -337,7 +337,7 @@
         </div>
       </div>
 
-      <!-- Bedrooms & Bathrooms (Hidden if Property Type is Land) -->
+      <!-- Bedrooms & Bathrooms -->
       <div class="row" id="bedBathRow">
         <div class="form-group">
           <label id="lblBedrooms" for="bedrooms">បន្ទប់គេង</label>
@@ -393,7 +393,7 @@
   </div>
 
   <script>
-    const tg = window.Telegram ? window.Telegram.WebApp : null;
+    const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
     if (tg) {
       tg.ready();
       tg.expand();
@@ -608,7 +608,7 @@
       submitBtn.disabled = true;
       submitBtn.innerText = translations[currentLang].btnSending;
 
-      const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+      const user = (tg && tg.initDataUnsafe) ? tg.initDataUnsafe.user : null;
       const now = new Date();
       const formattedDate = now.toLocaleString('en-GB', { timeZone: 'Asia/Phnom_Penh' });
 
@@ -648,15 +648,15 @@
         });
 
         if (res.ok) {
-          if (tg) {
+          alert(currentLang === 'km' ? 'អចលនទ្រព្យត្រូវបានចុះបញ្ជីដោយជោគជ័យ!' : 'Property listed successfully!');
+          form.reset();
+          updateCommissionOptions('Sale & Rent');
+          if (tg && typeof tg.close === 'function') {
             tg.close();
-          } else {
-            alert(currentLang === 'km' ? 'អចលនទ្រព្យត្រូវបានចុះបញ្ជីដោយជោគជ័យ!' : 'Property listed successfully!');
-            form.reset();
-            updateCommissionOptions('Sale & Rent');
           }
         } else {
-          alert(currentLang === 'km' ? 'មានបញ្ហាក្នុងការផ្ញើ សូមព្យាយាមម្តងទៀត' : 'Error submitting form, please try again.');
+          const errText = await res.text();
+          alert((currentLang === 'km' ? 'មានបញ្ហាក្នុងការផ្ញើ៖ ' : 'Error submitting form: ') + errText);
         }
       } catch (err) {
         console.error('Submission Error:', err);
