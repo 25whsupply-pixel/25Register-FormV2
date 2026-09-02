@@ -1,8 +1,6 @@
 const express = require('express');
-const axios = require('axios');
 const path = require('path');
 
-// 1. INITIALIZE EXPRESS APP (Fixes 'app is not defined' error)
 const app = express();
 
 app.use(express.json());
@@ -10,18 +8,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ==========================================
-// CONFIGURATION (UPDATE YOUR CREDENTIALS HERE)
+// CONFIGURATION (FETCHED FROM RENDER ENV)
 // ==========================================
-const TELEGRAM_BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN";
-const TELEGRAM_CHAT_ID = "YOUR_TELEGRAM_GROUP_CHAT_ID"; // e.g., -1001234567890
+const TELEGRAM_BOT_TOKEN = process.env.BOT_TOKEN;
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_GROUP_ID;
 
-// Optional Telegram Group Topic Thread IDs (Leave null if not using topics)
-const TELEGRAM_INQUIRY_TOPIC_ID = null; // e.g., 2
-const TELEGRAM_LISTING_TOPIC_ID = null; // e.g., 4
+const TELEGRAM_INQUIRY_TOPIC_ID = process.env.TOPIC_CLIENT_ID || null;
+const TELEGRAM_LISTING_TOPIC_ID = process.env.TOPIC_PROPERTY_ID || null;
 
-// Google Apps Script Web App URLs
-const GOOGLE_SHEET_INQUIRY_URL = "YOUR_GOOGLE_APPS_SCRIPT_INQUIRY_WEB_APP_URL";
-const GOOGLE_SHEET_LISTING_URL = "YOUR_GOOGLE_APPS_SCRIPT_LISTING_WEB_APP_URL";
+// Supports dual URL or single fallbacks matching your Render keys
+const GOOGLE_SHEET_INQUIRY_URL = process.env.SCRIPT_URL || process.env.WEB_APP_URL;
+const GOOGLE_SHEET_LISTING_URL = process.env.WEB_APP_URL || process.env.SCRIPT_URL;
 
 // ==========================================
 // PAGE ROUTING
@@ -35,9 +32,14 @@ app.get('/listing', (req, res) => {
 });
 
 // ==========================================
-// HELPER FUNCTIONS FOR OUTBOUND CALLS
+// HELPER FUNCTIONS USING NATIVE FETCH
 // ==========================================
 async function sendTelegramMessage(text, threadId = null) {
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+    console.warn("Telegram Bot Token or Chat ID missing in environment variables.");
+    return;
+  }
+
   const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
   const body = {
     chat_id: TELEGRAM_CHAT_ID,
@@ -47,20 +49,39 @@ async function sendTelegramMessage(text, threadId = null) {
   };
 
   if (threadId) {
-    body.message_thread_id = threadId;
+    body.message_thread_id = parseInt(threadId, 10);
   }
 
-  return axios.post(url, body);
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Telegram API HTTP ${response.status}: ${errText}`);
+  }
+  return response.json();
 }
 
 async function sendToGoogleSheet(webAppUrl, payload) {
-  if (!webAppUrl || webAppUrl.includes("YOUR_GOOGLE_APPS_SCRIPT")) {
-    console.warn("Google Sheet Web App URL not configured properly.");
+  if (!webAppUrl) {
+    console.warn("Google Sheet Web App URL missing in environment variables.");
     return;
   }
-  return axios.post(webAppUrl, payload, {
-    headers: { 'Content-Type': 'application/json' }
+
+  const response = await fetch(webAppUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
   });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Google Sheet API HTTP ${response.status}: ${errText}`);
+  }
+  return response.json();
 }
 
 // ==========================================
@@ -99,8 +120,8 @@ app.post('/submit', async (req, res) => {
     const tgFailed = results[0].status === 'rejected';
     const sheetFailed = results[1].status === 'rejected';
 
-    if (tgFailed) console.error('Telegram API Error:', results[0].reason?.response?.data || results[0].reason);
-    if (sheetFailed) console.error('Google Sheet API Error:', results[1].reason?.response?.data || results[1].reason);
+    if (tgFailed) console.error('Telegram API Error:', results[0].reason?.message || results[0].reason);
+    if (sheetFailed) console.error('Google Sheet API Error:', results[1].reason?.message || results[1].reason);
 
     if (tgFailed && sheetFailed) {
       return res.status(500).send("Failed to deliver data to Telegram and Google Sheets.");
@@ -149,8 +170,8 @@ app.post('/submit-listing', async (req, res) => {
     const tgFailed = results[0].status === 'rejected';
     const sheetFailed = results[1].status === 'rejected';
 
-    if (tgFailed) console.error('Telegram API Error:', results[0].reason?.response?.data || results[0].reason);
-    if (sheetFailed) console.error('Google Sheet API Error:', results[1].reason?.response?.data || results[1].reason);
+    if (tgFailed) console.error('Telegram API Error:', results[0].reason?.message || results[0].reason);
+    if (sheetFailed) console.error('Google Sheet API Error:', results[1].reason?.message || results[1].reason);
 
     if (tgFailed && sheetFailed) {
       return res.status(500).send("Failed to deliver data to Telegram and Google Sheets.");
