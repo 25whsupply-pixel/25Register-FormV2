@@ -288,7 +288,7 @@
         </div>
       </div>
 
-      <!-- Bedrooms & Bathrooms (Hidden when Land is selected) -->
+      <!-- Bedrooms & Bathrooms -->
       <div class="row" id="bedBathRow">
         <div class="form-group">
           <label id="lblBedrooms" for="bedrooms">បន្ទប់គេង (Bedrooms)</label>
@@ -380,7 +380,7 @@
   </div>
 
   <script>
-    const tg = window.Telegram ? window.Telegram.WebApp : null;
+    const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
     if (tg) {
       tg.ready();
       tg.expand();
@@ -553,7 +553,7 @@
       const loc2 = document.getElementById('location2').value.trim();
       const combinedLocation = loc2 ? `${loc1}, ${loc2}` : loc1;
 
-      const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+      const user = (tg && tg.initDataUnsafe) ? tg.initDataUnsafe.user : null;
       const now = new Date();
       const formattedDate = now.toLocaleString('en-GB', { timeZone: 'Asia/Phnom_Penh' });
 
@@ -592,14 +592,14 @@
         });
 
         if (res.ok) {
-          if (tg) {
+          alert(currentLang === 'km' ? 'ព័ត៌មានត្រូវបានផ្ញើដោយជោគជ័យ!' : 'Inquiry submitted successfully!');
+          form.reset();
+          if (tg && typeof tg.close === 'function') {
             tg.close();
-          } else {
-            alert(currentLang === 'km' ? 'ព័ត៌មានត្រូវបានផ្ញើដោយជោគជ័យ!' : 'Inquiry submitted successfully!');
-            form.reset();
           }
         } else {
-          alert(currentLang === 'km' ? 'មានបញ្ហាក្នុងការផ្ញើ សូមព្យាយាមម្តងទៀត' : 'Error submitting form, please try again.');
+          const errText = await res.text();
+          alert((currentLang === 'km' ? 'មានបញ្ហាក្នុងការផ្ញើ៖ ' : 'Error submitting form: ') + errText);
         }
       } catch (err) {
         console.error('Submission Error:', err);
