@@ -232,6 +232,7 @@
 
     <form id="listingForm">
 
+      <!-- Role Selector -->
       <div class="form-group">
         <label id="lblRole">តួនាទីរបស់អ្នក (User Role) <span class="required">*</span></label>
         <div class="segmented-control">
@@ -246,11 +247,13 @@
         </div>
       </div>
 
+      <!-- Submitter Name -->
       <div class="form-group">
         <label id="lblFullName" for="fullName">ឈ្មោះអ្នកប្រគល់ព័ត៌មាន (Submitted by) <span class="required">*</span></label>
         <input type="text" id="fullName" placeholder="ឧទាហរណ៍៖ សុខ ជា" required>
       </div>
 
+      <!-- Phones -->
       <div class="row">
         <div class="form-group">
           <label id="lblPhone" for="phone">លេខទូរស័ព្ទទី១ (Tel 1) <span class="required">*</span></label>
@@ -262,23 +265,29 @@
         </div>
       </div>
 
+      <!-- Telegram -->
       <div class="form-group">
         <label id="lblTg" for="telegramAccount">គណនី Telegram <span class="required">*</span></label>
         <input type="text" id="telegramAccount" placeholder="@username ឬ លេខទូរស័ព្ទ" required>
       </div>
 
+      <!-- Property Type Dropdown -->
       <div class="form-group">
         <label id="lblPropType" for="propertyType">ប្រភេទអចលនទ្រព្យ (Property Type) <span class="required">*</span></label>
         <select id="propertyType" required>
           <option value="" id="optTypeDefault">-- ជ្រើសរើស --</option>
-          <option value="House" id="optTypeHouse">ផ្ទះអាជីវកម្ម / ផ្ទះល្វែង</option>
+          <option value="House / Flat House" id="optTypeHouse">ផ្ទះ / ផ្ទះល្វែង</option>
+          <option value="Shophouse" id="optTypeShophouse">ផ្ទះអាជីវកម្ម</option>
           <option value="Villa" id="optTypeVilla">វីឡា</option>
-          <option value="Condo" id="optTypeCondo">ខុនដូ / អាផាតមិន</option>
+          <option value="Condo" id="optTypeCondo">ខុនដូ</option>
+          <option value="Apartment" id="optTypeApartment">អាផាតមិន</option>
           <option value="Land" id="optTypeLand">ដី</option>
-          <option value="Warehouse" id="optTypeWarehouse">ឃ្លាំង / រោងចក្រ</option>
+          <option value="Warehouse" id="optTypeWarehouse">ឃ្លាំង</option>
+          <option value="Factory" id="optTypeFactory">រោងចក្រ</option>
         </select>
       </div>
 
+      <!-- Listing Type Options -->
       <div class="form-group">
         <label id="lblListingType">ប្រភេទនៃការដាក់លក់/ជួល (Listing Type) <span class="required">*</span></label>
         <div class="segmented-control">
@@ -293,6 +302,7 @@
         </div>
       </div>
 
+      <!-- Prices -->
       <div class="row">
         <div class="form-group" id="rentPriceGroup">
           <label id="lblRentPrice" for="rentPrice">តម្លៃជួល ($/ខែ)</label>
@@ -304,6 +314,7 @@
         </div>
       </div>
 
+      <!-- Location & Google Map Link -->
       <div class="form-group">
         <label id="lblLoc1" for="location">ទីតាំង (Location) <span class="required">*</span></label>
         <input type="text" id="location" placeholder="ឧ. ទួលគោក" required>
@@ -314,6 +325,7 @@
         <input type="url" id="mapLink" placeholder="https://maps.google.com/..." required>
       </div>
 
+      <!-- Land & Building Size -->
       <div class="row">
         <div class="form-group" id="landSizeGroup">
           <label id="lblLandSize" for="landSize">ទំហំដី (Land Size)</label>
@@ -325,6 +337,7 @@
         </div>
       </div>
 
+      <!-- Bedrooms & Bathrooms (Hidden if Property Type is Land) -->
       <div class="row" id="bedBathRow">
         <div class="form-group">
           <label id="lblBedrooms" for="bedrooms">បន្ទប់គេង</label>
@@ -348,6 +361,7 @@
         </div>
       </div>
 
+      <!-- Parking Dropdown -->
       <div class="form-group">
         <label id="lblParking" for="parking">កន្លែងចតរថយន្ត / ម៉ូតូ (Parking)</label>
         <select id="parking">
@@ -358,6 +372,7 @@
         </select>
       </div>
 
+      <!-- Dynamic Commission Selector -->
       <div class="form-group">
         <label id="lblCommission" for="commission">កម្រៃជើងសារ (Commission Agree) <span class="required">*</span></label>
         <select id="commission" required></select>
@@ -366,6 +381,7 @@
         </p>
       </div>
 
+      <!-- Remarks / Description -->
       <div class="form-group">
         <label id="lblNotes" for="notes">ព័ត៌មានបន្ថែម (Remark / Description)</label>
         <textarea id="notes" rows="3" placeholder="បញ្ជាក់ព័ត៌មានបន្ថែម..."></textarea>
@@ -403,11 +419,14 @@
         saleRent: 'លក់ និង ជួល',
         propType: 'ប្រភេទអចលនទ្រព្យ (Property Type)',
         typeDefault: '-- ជ្រើសរើស --',
-        typeHouse: 'ផ្ទះអាជីវកម្ម / ផ្ទះល្វែង',
+        typeHouse: 'ផ្ទះ / ផ្ទះល្វែង',
+        typeShophouse: 'ផ្ទះអាជីវកម្ម',
         typeVilla: 'វីឡា',
-        typeCondo: 'ខុនដូ / អាផាតមិន',
+        typeCondo: 'ខុនដូ',
+        typeApartment: 'អាផាតមិន',
         typeLand: 'ដី',
-        typeWarehouse: 'ឃ្លាំង / រោងចក្រ',
+        typeWarehouse: 'ឃ្លាំង',
+        typeFactory: 'រោងចក្រ',
         rentPrice: 'តម្លៃជួល ($/ខែ)',
         salePrice: 'តម្លៃលក់ ($)',
         loc1: 'ទីតាំង (Location)',
@@ -444,11 +463,14 @@
         saleRent: 'Sale & Rent',
         propType: 'Property Type',
         typeDefault: '-- Select Type --',
-        typeHouse: 'House / Shophouse',
+        typeHouse: 'House / Flat House',
+        typeShophouse: 'Shophouse',
         typeVilla: 'Villa',
-        typeCondo: 'Condo / Apartment',
+        typeCondo: 'Condo',
+        typeApartment: 'Apartment',
         typeLand: 'Land',
-        typeWarehouse: 'Warehouse / Factory',
+        typeWarehouse: 'Warehouse',
+        typeFactory: 'Factory',
         rentPrice: 'Rental Price ($/mo)',
         salePrice: 'Sale Price ($)',
         loc1: 'Location',
@@ -497,10 +519,13 @@
       document.getElementById('lblPropType').childNodes[0].nodeValue = t.propType + " ";
       document.getElementById('optTypeDefault').innerText = t.typeDefault;
       document.getElementById('optTypeHouse').innerText = t.typeHouse;
+      document.getElementById('optTypeShophouse').innerText = t.typeShophouse;
       document.getElementById('optTypeVilla').innerText = t.typeVilla;
       document.getElementById('optTypeCondo').innerText = t.typeCondo;
+      document.getElementById('optTypeApartment').innerText = t.typeApartment;
       document.getElementById('optTypeLand').innerText = t.typeLand;
       document.getElementById('optTypeWarehouse').innerText = t.typeWarehouse;
+      document.getElementById('optTypeFactory').innerText = t.typeFactory;
 
       document.getElementById('lblRentPrice').innerText = t.rentPrice;
       document.getElementById('lblSalePrice').innerText = t.salePrice;
@@ -525,7 +550,6 @@
       document.getElementById('submitBtn').innerText = t.btnSubmit;
     }
 
-    // Dynamic Commission Options based on Listing Type
     function updateCommissionOptions(type) {
       const commSelect = document.getElementById('commission');
       commSelect.innerHTML = '';
@@ -536,13 +560,12 @@
       } else if (type === 'Rent') {
         commSelect.options.add(new Option('100%', '100%'));
         commSelect.options.add(new Option('Asking for negotiated', 'Asking for negotiated'));
-      } else { // Sale & Rent
+      } else {
         commSelect.options.add(new Option('3% (Sale) / 100% (Rent)', '3% (Sale) / 100% (Rent)'));
         commSelect.options.add(new Option('Asking for negotiated', 'Asking for negotiated'));
       }
     }
 
-    // Hide Bedrooms & Bathrooms when Land is selected
     document.getElementById('propertyType').addEventListener('change', (e) => {
       const isLand = e.target.value === 'Land';
       const bedBathRow = document.getElementById('bedBathRow');
@@ -553,7 +576,6 @@
       }
     });
 
-    // Dynamic price view & commission update on Listing Type change
     document.querySelectorAll('input[name="listingType"]').forEach(radio => {
       radio.addEventListener('change', (e) => {
         const type = e.target.value;
@@ -572,7 +594,6 @@
       });
     });
 
-    // Initialize commission options on start
     updateCommissionOptions('Sale & Rent');
 
     document.querySelectorAll('input[name="lang"]').forEach(radio => {
