@@ -2,7 +2,9 @@ const express = require('express');
 const axios = require('axios');
 const path = require('path');
 
+// 1. INITIALIZE EXPRESS APP (Fixes 'app is not defined' error)
 const app = express();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -11,7 +13,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // CONFIGURATION (UPDATE YOUR CREDENTIALS HERE)
 // ==========================================
 const TELEGRAM_BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN";
-const TELEGRAM_CHAT_ID = "YOUR_TELEGRAM_GROUP_CHAT_ID"; // e.g. -1001234567890
+const TELEGRAM_CHAT_ID = "YOUR_TELEGRAM_GROUP_CHAT_ID"; // e.g., -1001234567890
 
 // Optional Telegram Group Topic Thread IDs (Leave null if not using topics)
 const TELEGRAM_INQUIRY_TOPIC_ID = null; // e.g., 2
@@ -22,10 +24,19 @@ const GOOGLE_SHEET_INQUIRY_URL = "YOUR_GOOGLE_APPS_SCRIPT_INQUIRY_WEB_APP_URL";
 const GOOGLE_SHEET_LISTING_URL = "YOUR_GOOGLE_APPS_SCRIPT_LISTING_WEB_APP_URL";
 
 // ==========================================
+// PAGE ROUTING
+// ==========================================
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/listing', (req, res) => {
+  res.sendFile(path.join(__dirname, 'listing.html'));
+});
+
+// ==========================================
 // HELPER FUNCTIONS FOR OUTBOUND CALLS
 // ==========================================
-
-// Send formatted message to Telegram Group/Topic
 async function sendTelegramMessage(text, threadId = null) {
   const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
   const body = {
@@ -42,7 +53,6 @@ async function sendTelegramMessage(text, threadId = null) {
   return axios.post(url, body);
 }
 
-// Send payload to Google Sheets Web App
 async function sendToGoogleSheet(webAppUrl, payload) {
   if (!webAppUrl || webAppUrl.includes("YOUR_GOOGLE_APPS_SCRIPT")) {
     console.warn("Google Sheet Web App URL not configured properly.");
@@ -59,7 +69,6 @@ async function sendToGoogleSheet(webAppUrl, payload) {
 app.post('/submit', async (req, res) => {
   const data = req.body;
 
-  // 1. Format Telegram Message
   const tgMessage = `
 <b>📋 NEW CLIENT INQUIRY</b>
 ----------------------------------
@@ -82,13 +91,11 @@ app.post('/submit', async (req, res) => {
   `.trim();
 
   try {
-    // Dispatch both requests in parallel
     const results = await Promise.allSettled([
       sendTelegramMessage(tgMessage, TELEGRAM_INQUIRY_TOPIC_ID),
       sendToGoogleSheet(GOOGLE_SHEET_INQUIRY_URL, data)
     ]);
 
-    // Check if both external services failed
     const tgFailed = results[0].status === 'rejected';
     const sheetFailed = results[1].status === 'rejected';
 
@@ -112,7 +119,6 @@ app.post('/submit', async (req, res) => {
 app.post('/submit-listing', async (req, res) => {
   const data = req.body;
 
-  // 1. Format Telegram Message
   const tgMessage = `
 <b>🏠 NEW PROPERTY LISTING</b>
 ----------------------------------
@@ -135,7 +141,6 @@ app.post('/submit-listing', async (req, res) => {
   `.trim();
 
   try {
-    // Dispatch both requests in parallel
     const results = await Promise.allSettled([
       sendTelegramMessage(tgMessage, TELEGRAM_LISTING_TOPIC_ID),
       sendToGoogleSheet(GOOGLE_SHEET_LISTING_URL, data)
